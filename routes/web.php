@@ -5,6 +5,10 @@ Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'inde
 Route::get('/leads/create', [App\Http\Controllers\LeadController::class, 'create']);
 Route::post('/leads', [App\Http\Controllers\LeadController::class, 'store']);
 
+Route::get('/properties', [App\Http\Controllers\PropertyController::class, 'index']);
+Route::get('/properties/create', [App\Http\Controllers\PropertyController::class, 'create']);
+Route::post('/properties', [App\Http\Controllers\PropertyController::class, 'store']);
+
 // PUBLIC ROUTES (no auth)
 // Route::group([], function () {
 //     Route::get('/login',                    [LoginController::class, 'showForm']);
