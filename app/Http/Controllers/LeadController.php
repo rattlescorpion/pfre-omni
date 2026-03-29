@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\Crm\LeadService;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 
 final class LeadController extends Controller
 {
@@ -12,25 +11,28 @@ final class LeadController extends Controller
         private readonly LeadService $leadService
     ) {}
 
-    public function index(): JsonResponse
+    // 1. This method shows the visual HTML form
+    public function create()
     {
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Lead pipeline loaded successfully.'
-        ]);
+        return view('leads.create');
     }
 
-    public function store(Request $request): JsonResponse
+    // 2. This method catches the data when the user clicks "Submit"
+    public function store(Request $request)
     {
-        // In a real scenario, the $userId would come from the logged-in user: auth()->id()
+        // Check to make sure the user didn't leave required fields blank
+        $request->validate([
+            'name' => 'required|string|max:150',
+            'phone' => 'required|string|max:15',
+        ]);
+
+        // We use a dummy ID of 1 since we haven't built the login screen yet
         $dummyUserId = 1; 
         
-        $lead = $this->leadService->create($request->all(), $dummyUserId);
+        // Hand the data over to your heavy-duty Service engine to save it to the database
+        $this->leadService->create($request->all(), $dummyUserId);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Lead created successfully.',
-            'data' => $lead
-        ], 201);
+        // Send the user back to the dashboard so they can see the counter go up!
+        return redirect('/dashboard');
     }
 }

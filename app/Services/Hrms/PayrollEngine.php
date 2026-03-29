@@ -6,7 +6,7 @@ use App\Repositories\Hrms\{PayrollRepository, AttendanceRepository, EmployeeRepo
 use App\Services\Tax\TDSService;
 use App\Services\Erp\AccountingEngine;
 use App\Services\Shared\{AuditService, PDFService, NotificationService};
-use Core\{Database, Logger};
+use App\Core\{Database, Logger};
 
 final class PayrollEngine
 {

@@ -3,7 +3,7 @@ namespace App\Services\Crm;
 use App\Repositories\Crm\{LeadRepository, ClientRepository};
 use App\Services\Shared\{AuditService, NotificationService, CacheService};
 use App\Events\Crm\{LeadCreatedEvent, LeadStageChangedEvent, LeadAssignedEvent};
-use Core\{Database, Logger};
+use App\Core\{Database, Logger};
 final class LeadService
 {
     public function __construct(

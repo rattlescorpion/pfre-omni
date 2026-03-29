@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index']);
-Route::get('/leads', [App\Http\Controllers\LeadController::class, 'index']);
+Route::get('/leads/create', [App\Http\Controllers\LeadController::class, 'create']);
+Route::post('/leads', [App\Http\Controllers\LeadController::class, 'store']);
 
 // PUBLIC ROUTES (no auth)
 // Route::group([], function () {

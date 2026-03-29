@@ -9,9 +9,14 @@
 <body class="bg-slate-100 p-10 font-sans">
 
     <div class="max-w-6xl mx-auto">
-        <div class="mb-8">
-            <h1 class="text-4xl font-extrabold text-slate-800">Property Finder Real Estate</h1>
-            <p class="text-lg text-slate-500 mt-2">Welcome to the Omni Platform Dashboard!</p>
+        <div class="mb-8 flex justify-between items-end">
+            <div>
+                <h1 class="text-4xl font-extrabold text-slate-800">Property Finder Real Estate</h1>
+                <p class="text-lg text-slate-500 mt-2">Welcome to the Omni Platform Dashboard!</p>
+            </div>
+            <a href="/leads/create" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition duration-200">
+                + Add New Lead
+            </a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
