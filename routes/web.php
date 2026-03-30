@@ -9,6 +9,15 @@ Route::get('/properties', [App\Http\Controllers\PropertyController::class, 'inde
 Route::get('/properties/create', [App\Http\Controllers\PropertyController::class, 'create']);
 Route::post('/properties', [App\Http\Controllers\PropertyController::class, 'store']);
 
+use App\Http\Controllers\Hrms\EmployeeController;
+
+// HRMS Module Routes
+Route::prefix('employees')->group(function () {
+    Route::get('/', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/', [EmployeeController::class, 'store'])->name('employees.store');
+});
+
 // PUBLIC ROUTES (no auth)
 // Route::group([], function () {
 //     Route::get('/login',                    [LoginController::class, 'showForm']);

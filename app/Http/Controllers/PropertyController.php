@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Repositories\Crm\PropertyRepository;
+use App\Services\Crm\PropertyService;
 use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
-    public function __construct(protected PropertyRepository $propertyRepo) {}
+    public function __construct(protected PropertyService $service)
+    {
+    }
 
     public function index()
     {
-        $properties = $this->propertyRepo->getAll();
-        return view('properties.index', compact('properties'));
+        return view('properties.index', ['properties' => $this->service->getAll()]);
     }
 
     public function create()
@@ -22,8 +23,7 @@ class PropertyController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate(['title' => 'required|string|max:255']);
-        $this->propertyRepo->create($request->all());
-        return redirect('/properties');
+        $this->service->create($request->all(), auth()->id() ?? 1);
+        return redirect('/properties')->with('success', 'Property added to inventory.');
     }
 }

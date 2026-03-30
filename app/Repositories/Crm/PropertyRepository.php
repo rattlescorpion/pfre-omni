@@ -2,29 +2,12 @@
 
 namespace App\Repositories\Crm;
 
+use App\Repositories\BaseRepository;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
-class PropertyRepository
+class PropertyRepository extends BaseRepository
 {
-    public function create(array $data): array
-    {
-        $id = DB::table('properties')->insertGetId([
-            'uuid' => Str::uuid()->toString(),
-            'title' => $data['title'],
-            'type' => $data['type'] ?? 'apartment',
-            'status' => 'available',
-            'price' => $data['price'] ?? 0,
-            'location' => $data['location'] ?? null,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+    protected string $table = 'properties';
 
-        return (array) DB::table('properties')->find($id);
-    }
-
-    public function getAll()
-    {
-        return DB::table('properties')->orderBy('created_at', 'desc')->get();
-    }
+    // All standard CRUD (Create, Read, Update, Delete) is now inherited from Base!
 }

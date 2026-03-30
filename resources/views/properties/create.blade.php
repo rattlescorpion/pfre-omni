@@ -9,8 +9,8 @@
             @csrf
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Property Title</label>
-                <input type="text" name="title" required placeholder="e.g. 3BHK Luxury Apartment - Bandra West" 
-                       class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
+                <input type="text" name="name" required placeholder="e.g. 3BHK Luxury Apartment - Bandra West"
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none transition">
             </div>
 
             <div>
@@ -26,19 +26,27 @@
 
             <div>
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Price (₹)</label>
-                <input type="number" name="price" placeholder="5000000" 
-                       class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none">
+                <input type="number" name="price" placeholder="5000000"
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none">
+            </div>
+
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-slate-700 mb-2">Full Address</label>
+                <textarea name="address" rows="2" required placeholder="Building name, Flat no, Street..."
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none"></textarea>
             </div>
 
             <div class="md:col-span-2">
                 <label class="block text-sm font-semibold text-slate-700 mb-2">Location / Address</label>
-                <textarea name="location" rows="3" placeholder="Full address or locality details..." 
-                          class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none"></textarea>
+                <textarea name="locality" rows="3" placeholder="Full address or locality details..."
+                    class="w-full px-4 py-3 rounded-lg border border-slate-300 outline-none"></textarea>
             </div>
 
             <div class="md:col-span-2 flex justify-end gap-4 mt-4">
-                <a href="/properties" class="px-6 py-3 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition">Cancel</a>
-                <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition">
+                <a href="/properties"
+                    class="px-6 py-3 text-slate-600 font-semibold hover:bg-slate-50 rounded-lg transition">Cancel</a>
+                <button type="submit"
+                    class="px-8 py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 shadow-md transition">
                     Save Property
                 </button>
             </div>
