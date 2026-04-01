@@ -18,6 +18,22 @@ Route::prefix('employees')->group(function () {
     Route::post('/', [EmployeeController::class, 'store'])->name('employees.store');
 });
 
+use App\Http\Controllers\Crm\TaskController;
+use App\Http\Controllers\Inventory\InventoryController;
+
+// CRM Tasks
+Route::resource('tasks', TaskController::class);
+
+// Inventory Management
+Route::prefix('inventory')->group(function () {
+    Route::get('/', [InventoryController::class, 'index'])->name('inventory.index');
+    Route::post('/{id}/status', [InventoryController::class, 'updateStatus'])->name('inventory.status');
+});
+
+// Real Estate Specialized Calculations
+Route::post('/calculate-gst', [App\Http\Controllers\Finance\FinanceController::class, 'gst']);
+Route::post('/calculate-stamp-duty', [App\Http\Controllers\Finance\FinanceController::class, 'stampDuty']);
+
 // PUBLIC ROUTES (no auth)
 // Route::group([], function () {
 //     Route::get('/login',                    [LoginController::class, 'showForm']);
