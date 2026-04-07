@@ -365,7 +365,7 @@ Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on p
 
 Security vulnerabilities in this platform should be reported **privately** to:
 
-**Email:** security@rattlescorpion.com
+**Email:** rattlescorpion@gmail.com
 
 Do not open public GitHub Issues for security vulnerabilities. All reports are acknowledged within 48 hours and patched within 7 business days.
 
