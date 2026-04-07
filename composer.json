@@ -1,27 +1,35 @@
 {
-    "name": "laravel/laravel",
+    "name": "rattlescorpion/pfre-omni",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
-    "license": "MIT",
+    "description": "Property Finder Real Estate Omni Platform — Enterprise CRM, Sales, Compliance & Operations.",
+    "keywords": ["laravel", "real-estate", "crm", "erp", "india"],
+    "license": "proprietary",
     "require": {
         "php": "^8.2",
         "guzzlehttp/guzzle": "^7.10.0",
         "laravel/framework": "^10.50.2",
         "laravel/sanctum": "^3.3.3",
         "laravel/tinker": "^2.11.1",
+        "laravel/scout": "^10.0",
+        "laravel/telescope": "^4.17",
+        "laravel/horizon": "^5.21",
         "razorpay/razorpay": "^2.9",
         "barryvdh/laravel-dompdf": "^2.0",
-        "maatwebsite/excel": "^3.1",
-        "twilio/sdk": "^8.0",
+        "maatwebsite/excel": "^3.1.55",
+        "netflie/whatsapp-cloud-api": "^2.0",
         "predis/predis": "^2.2",
         "spatie/laravel-permission": "^6.0",
         "spatie/laravel-activitylog": "^4.7",
         "spatie/laravel-medialibrary": "^11.0",
-        "brick/money": "^0.8",
-        "laravel/telescope": "^4.17",
-        "laravel/horizon": "^5.21",
-        "spatie/laravel-backup": "^8.6"
+        "spatie/laravel-backup": "^8.6",
+        "spatie/laravel-query-builder": "^5.8",
+        "spatie/laravel-data": "^4.0",
+        "brick/money": "^0.8.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "intervention/image": "^3.0",
+        "propaganistas/laravel-phone": "^5.0",
+        "darkaonline/l5-swagger": "^8.6",
+        "php-open-source-saver/jwt-auth": "^2.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
@@ -30,14 +38,18 @@
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^7.12.0",
         "phpunit/phpunit": "^10.5.63",
-        "spatie/laravel-ignition": "^2.9.1"
+        "spatie/laravel-ignition": "^2.9.1",
+        "psr/simple-cache": "^3.0.0"
     },
     "autoload": {
         "psr-4": {
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/IndiaHelpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -75,5 +87,4 @@
     },
     "minimum-stability": "stable",
     "prefer-stable": true
-    
 }

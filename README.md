@@ -1,66 +1,390 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PFRE-Omni — Property Finder Real Estate Omni Platform
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="300" alt="Laravel Logo" />
 </p>
 
-## About Laravel
+<p align="center">
+  <a href="https://github.com/rattlescorpion/pfre-omni/actions">
+    <img src="https://github.com/rattlescorpion/pfre-omni/workflows/CI/badge.svg" alt="CI Status" />
+  </a>
+  <img src="https://img.shields.io/badge/PHP-8.2-blue?logo=php" alt="PHP 8.2" />
+  <img src="https://img.shields.io/badge/Laravel-10.x-red?logo=laravel" alt="Laravel 10" />
+  <img src="https://img.shields.io/badge/MySQL-8.0-orange?logo=mysql" alt="MySQL 8.0" />
+  <img src="https://img.shields.io/badge/Redis-7.x-red?logo=redis" alt="Redis" />
+  <img src="https://img.shields.io/badge/license-Proprietary-lightgrey" alt="License" />
+</p>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+> Enterprise-grade real estate operations platform covering CRM, sales, bookings, finance, GST/RERA compliance, HRMS, payroll, procurement, facilities management, and white-label verticals — built for the Indian market.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Table of Contents
 
-## Learning Laravel
+- [Overview](#overview)
+- [Platform Architecture](#platform-architecture)
+- [Module Clusters](#module-clusters)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Environment Configuration](#environment-configuration)
+- [Database Setup](#database-setup)
+- [Queue & Horizon](#queue--horizon)
+- [Indian Compliance](#indian-compliance)
+- [Key Integrations](#key-integrations)
+- [Scheduled Jobs](#scheduled-jobs)
+- [Testing](#testing)
+- [Docker Setup](#docker-setup)
+- [Deployment](#deployment)
+- [Security](#security)
+- [Contributing](#contributing)
+- [License](#license)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## Overview
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+PFRE-Omni is a multi-tenant, modular SaaS platform designed for real estate developers, brokers, and property management companies operating in India. It unifies 306 functional modules across 26 domain clusters into a single, cohesive application.
 
-## Laravel Sponsors
+The platform handles the full lifecycle of a real estate business — from lead capture and site visits through booking, agreement, construction-linked payment plans, possession, society formation, and post-possession facility management — while maintaining full compliance with Indian regulations including GST, MahaRERA, RERA, TDS, PF/ESIC, and Maharashtra Stamp Duty.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## Platform Architecture
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```
+pfre-omni/
+├── app/
+│   ├── Console/          # 141 scheduled Artisan commands
+│   ├── Http/
+│   │   ├── Controllers/  # 306 module controllers
+│   │   └── Middleware/   # Auth, tenant, rate-limit, audit
+│   ├── Models/           # Eloquent models per domain
+│   ├── Services/         # Domain service classes (16+ domains)
+│   ├── Jobs/             # Queued jobs (Horizon-managed)
+│   ├── Events/           # Domain events
+│   ├── Listeners/        # Event listeners
+│   ├── Helpers/
+│   │   └── IndiaHelpers.php   # GST, PAN, Aadhaar, IFSC utilities
+│   └── Providers/        # Service provider bootstrap
+├── config/               # Per-module configuration files
+├── database/
+│   ├── migrations/       # Schema migrations (real estate extensions)
+│   └── seeders/          # Pre-seeded dashboard widgets, report templates
+├── resources/
+│   └── views/            # Blade templates
+├── routes/
+│   ├── web.php
+│   ├── api.php           # 1,700+ REST endpoints
+│   └── channels.php
+├── storage/
+│   ├── app/documents/    # Agreements, invoices, RERA filings
+│   └── app/reports/      # Generated PDF/XLSX reports
+└── tests/
+    ├── Unit/
+    └── Feature/
+```
+
+---
+
+## Module Clusters
+
+| # | Cluster | Modules |
+|---|---------|---------|
+| 1 | **CRM & Lead Management** | Leads, Follow-ups, Site Visits, Source Tracking |
+| 2 | **Sales & Booking** | Unit Inventory, Bookings, Allotments, Cancellations |
+| 3 | **Finance & Billing** | Payment Plans, Receipts, Demand Letters, Ledger |
+| 4 | **GST & e-Invoice** | GSTR-1/3B, IRN Generation, e-Way Bill, HSN/SAC |
+| 5 | **RERA / MahaRERA** | Project Registration, Quarterly Updates, Complaints |
+| 6 | **Legal & Agreements** | Sale Agreements, Stamp Duty, Registration |
+| 7 | **HRMS** | Employees, Attendance, Leave, Appraisals |
+| 8 | **Payroll** | Salary Processing, PF/ESIC/PT/TDS, Pay Slips |
+| 9 | **Procurement** | Purchase Orders, Vendors, GRN, Approvals |
+| 10 | **Facility Management** | AMC, Maintenance Tickets, Housekeeping |
+| 11 | **Society / HOA** | Society Formation, Maintenance Billing, NOC |
+| 12 | **White-Label: Clinic** | OPD/IPD, Appointments, Prescriptions |
+| 13 | **White-Label: School** | Admissions, Fees, Timetable, Results |
+| 14 | **White-Label: Hotel** | Room Inventory, Bookings, OTA Channel Manager |
+| 15 | **White-Label: Retail/POS** | Inventory, Billing, GST POS |
+| 16 | **Warehouse & Logistics** | Stock, Dispatch, Delivery Tracking |
+| 17 | **ITSM** | Helpdesk, SLA, Asset Management |
+| 18 | **Agriculture** | Land Records, MSP Rates, Crop Tracking |
+| 19 | **Analytics & BI** | Dashboards, KPIs, Report Builder |
+| 20 | **Notifications** | WhatsApp, SMS, Email, Push (FCM) |
+| 21 | **Document Management** | DMS, eSign, Version Control |
+| 22 | **Configuration & Settings** | Multi-tenant, Roles, Permissions |
+| 23–26 | *(Infrastructure clusters)* | BBPS, MCA, Audit, Integrations |
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Framework** | Laravel 10.x (PHP 8.2) |
+| **Database** | MySQL 8.0 |
+| **Cache** | Redis 7.x |
+| **Queue** | Laravel Horizon (Redis) |
+| **Search** | Meilisearch (via Laravel Scout) |
+| **Storage** | AWS S3 / Wasabi (ap-south-1) |
+| **Auth** | Laravel Sanctum + JWT |
+| **Roles** | Spatie Laravel Permission |
+| **Payments** | Razorpay |
+| **Messaging** | WhatsApp Cloud API (Meta v21.0), MSG91 |
+| **PDF** | barryvdh/laravel-dompdf |
+| **Excel** | Maatwebsite/Excel |
+| **Monitoring** | Laravel Telescope + Horizon dashboard |
+| **Broadcasting** | Pusher (cluster: ap2, Mumbai) |
+| **CI/CD** | GitHub Actions |
+| **Containers** | Docker + Docker Compose |
+
+---
+
+## Requirements
+
+- PHP >= 8.2 with extensions: `bcmath`, `ctype`, `curl`, `dom`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `zip`
+- MySQL >= 8.0
+- Redis >= 7.0
+- Node.js >= 18.x + npm
+- Composer >= 2.6
+- Meilisearch (optional, for full-text property search)
+
+---
+
+## Installation
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/rattlescorpion/pfre-omni.git
+cd pfre-omni
+
+# 2. Install PHP dependencies
+composer install --no-interaction --prefer-dist --optimize-autoloader
+
+# 3. Install Node dependencies and build assets
+npm install && npm run build
+
+# 4. Set up environment
+cp .env.example .env
+php artisan key:generate
+
+# 5. Run migrations and seeders
+php artisan migrate --seed
+
+# 6. Publish vendor assets
+php artisan vendor:publish --tag=laravel-assets --ansi
+
+# 7. Link storage
+php artisan storage:link
+
+# 8. Start local development server
+php artisan serve
+```
+
+---
+
+## Environment Configuration
+
+Copy `.env.example` to `.env` and configure the following sections:
+
+- **Database** — MySQL credentials and `pfre_omni` database
+- **Redis** — Separate DBs for cache (1), session (2), and queue (3)
+- **Razorpay** — Payment gateway keys
+- **WhatsApp Cloud API** — Meta Phone Number ID and Access Token
+- **GST / IRP** — GSTIN, Client credentials for e-Invoice
+- **MahaRERA** — API key for RERA project sync
+- **Aadhaar eSign** — ASP credentials
+- **CIBIL** — Member ID and API endpoint
+- **Google Maps** — Geocoding and Maps API key
+- **MSG91** — SMS OTP and transactional messaging
+- **AWS / Wasabi** — S3 bucket in `ap-south-1` for document storage
+
+Refer to `.env.example` for the full list of required variables with inline documentation.
+
+---
+
+## Database Setup
+
+```bash
+# Create database
+mysql -u root -p -e "CREATE DATABASE pfre_omni CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Run all migrations
+php artisan migrate
+
+# Seed reference data (roles, permissions, config, dashboard widgets)
+php artisan db:seed
+
+# Seed specific module (example)
+php artisan db:seed --class=GstRateSeeder
+```
+
+---
+
+## Queue & Horizon
+
+PFRE-Omni uses Laravel Horizon to manage all background job processing.
+
+```bash
+# Start Horizon (development)
+php artisan horizon
+
+# Access Horizon dashboard
+# http://localhost/horizon  (restricted to admin roles)
+```
+
+Queue workers are split by priority:
+
+| Queue | Purpose |
+|-------|---------|
+| `critical` | Payment confirmations, IRN generation |
+| `high` | WhatsApp/SMS dispatch, PDF generation |
+| `default` | Report generation, email |
+| `low` | Audit logs, analytics aggregation |
+
+---
+
+## Indian Compliance
+
+The platform includes built-in helpers in `app/Helpers/IndiaHelpers.php` for:
+
+- **GST** — GSTIN validation, HSN/SAC lookup, GSTR filing prep
+- **e-Invoice (IRN)** — IRP API integration for B2B invoices above ₹5 Cr threshold
+- **MahaRERA** — Project registration sync and quarterly reporting
+- **TDS** — Section 194IA (property purchase), 194C, 194J calculation
+- **PF / ESIC / PT** — Payroll deduction computation
+- **Maharashtra Stamp Duty** — Ready Reckoner rate lookup
+- **PAN / Aadhaar** — Format validation
+- **IFSC** — Bank branch resolution
+
+---
+
+## Key Integrations
+
+| Integration | Purpose | Package/Method |
+|-------------|---------|----------------|
+| Razorpay | Payment collection, refunds | `razorpay/razorpay` |
+| Meta WhatsApp Cloud API | Customer messaging, templates | `netflie/whatsapp-cloud-api` |
+| MSG91 | SMS OTP, transactional SMS | HTTP via Guzzle |
+| GSTN / IRP | e-Invoice IRN generation | HTTP via Guzzle |
+| Aadhaar eSign | Digital agreement signing | HTTP via Guzzle |
+| CIBIL | Buyer credit check | HTTP via Guzzle |
+| Google Maps | Property geocoding, site mapping | `googlemaps/google-maps-services-php` |
+| OTA Channel Manager | Hotel module room distribution | Configurable provider |
+| FCM | Mobile push notifications | `laravel-notification-channels/fcm` |
+| AWS S3 / Wasabi | Document and media storage | `league/flysystem-aws-s3-v3` |
+| Meilisearch | Full-text property search | `laravel/scout` |
+
+---
+
+## Scheduled Jobs
+
+141 cron jobs are registered in `app/Console/Kernel.php`, covering:
+
+- Daily GST reconciliation and GSTR-1 auto-draft
+- MahaRERA quarterly report generation
+- TDS calculation and challan preparation
+- Payment demand letter dispatch
+- Site visit follow-up reminders (WhatsApp + SMS)
+- Payroll processing triggers
+- Backup to S3 (daily, weekly, monthly)
+- Horizon snapshot metrics
+- Expired booking auto-cancellation
+- OTA availability sync (hotel module)
+
+Start the scheduler:
+
+```bash
+# Add to server crontab
+* * * * * cd /path/to/pfre-omni && php artisan schedule:run >> /dev/null 2>&1
+```
+
+---
+
+## Testing
+
+```bash
+# Run full test suite
+php artisan test
+
+# Run with coverage
+php artisan test --coverage --min=80
+
+# Run a specific module's tests
+php artisan test --filter=CrmTest
+
+# Run only unit tests
+php artisan test --testsuite=Unit
+```
+
+---
+
+## Docker Setup
+
+```bash
+# Build and start all services
+docker-compose up -d --build
+
+# Services started:
+#   app       → PHP-FPM 8.2 (port 9000)
+#   nginx     → Nginx (port 80, 443)
+#   mysql     → MySQL 8.0 (port 3306)
+#   redis     → Redis 7 (port 6379)
+#   horizon   → Queue worker
+#   scheduler → Cron scheduler
+#   meilisearch → Search engine (port 7700)
+
+# Run migrations inside container
+docker-compose exec app php artisan migrate --seed
+```
+
+---
+
+## Deployment
+
+```bash
+# Production deployment checklist
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+php artisan event:cache
+php artisan optimize
+
+# Set production env flags
+APP_ENV=production
+APP_DEBUG=false
+LOG_LEVEL=warning
+TELESCOPE_ENABLED=false   # Disable Telescope in production or restrict by IP
+```
+
+Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on push to the `main` branch. The pipeline runs: lint → test → build → deploy with zero-downtime rolling restart.
+
+---
+
+## Security
+
+Security vulnerabilities in this platform should be reported **privately** to:
+
+**Email:** security@rattlescorpion.com
+
+Do not open public GitHub Issues for security vulnerabilities. All reports are acknowledged within 48 hours and patched within 7 business days.
+
+---
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+This is a proprietary internal platform. External contributions are not accepted. For internal team members:
 
-## Code of Conduct
+1. Branch from `develop` — never commit directly to `main`
+2. Follow PSR-12 coding standards (enforced by Laravel Pint)
+3. Write feature tests for every new module
+4. All PRs require review from at least one senior developer
+5. Run `php artisan test` and `./vendor/bin/pint` before raising a PR
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Proprietary — All Rights Reserved.**
+
+Copyright © 2024–2026 Rattlescorpion. Unauthorised copying, distribution, or use of this software is strictly prohibited.

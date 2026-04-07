@@ -34,6 +34,10 @@ Route::prefix('inventory')->group(function () {
 Route::post('/calculate-gst', [App\Http\Controllers\Finance\FinanceController::class, 'gst']);
 Route::post('/calculate-stamp-duty', [App\Http\Controllers\Finance\FinanceController::class, 'stampDuty']);
 
+use App\Http\Controllers\Crm\ERegistrationController;
+
+Route::get('/e-registrations', [ERegistrationController::class, 'index'])->name('eregistrations.index');
+
 // PUBLIC ROUTES (no auth)
 // Route::group([], function () {
 //     Route::get('/login',                    [LoginController::class, 'showForm']);
