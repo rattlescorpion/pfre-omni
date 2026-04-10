@@ -1,45 +1,80 @@
 {
-    "name": "rattlescorpion/pfre-omni",
+    "name": "propertyfinder/pfre-omni",
     "type": "project",
-    "description": "Property Finder Real Estate Omni Platform — Enterprise CRM, Sales, Compliance & Operations.",
-    "keywords": ["laravel", "real-estate", "crm", "erp", "india"],
+    "description": "Property Finder Real Estate — Omni Enterprise Platform v6",
+    "keywords": ["laravel", "real-estate", "erp", "crm", "pms"],
     "license": "proprietary",
     "require": {
         "php": "^8.2",
-        "guzzlehttp/guzzle": "^7.10.0",
-        "laravel/framework": "^10.50.2",
-        "laravel/sanctum": "^3.3.3",
-        "laravel/tinker": "^2.11.1",
-        "laravel/scout": "^10.0",
-        "laravel/telescope": "^4.17",
-        "laravel/horizon": "^5.21",
-        "razorpay/razorpay": "^2.9",
-        "barryvdh/laravel-dompdf": "^2.0",
-        "maatwebsite/excel": "^3.1.55",
-        "netflie/whatsapp-cloud-api": "^2.0",
+
+        "laravel/framework": "^10.48",
+        "laravel/sanctum": "^3.3",
+        "laravel/tinker": "^2.9",
+
+        "guzzlehttp/guzzle": "^7.8",
         "predis/predis": "^2.2",
-        "spatie/laravel-permission": "^6.0",
-        "spatie/laravel-activitylog": "^4.7",
-        "spatie/laravel-medialibrary": "^11.0",
-        "spatie/laravel-backup": "^8.6",
-        "spatie/laravel-query-builder": "^5.8",
-        "spatie/laravel-data": "^4.0",
-        "brick/money": "^0.8.0",
+
+        "spatie/laravel-permission": "^6.3",
+        "spatie/laravel-activitylog": "^4.8",
+        "spatie/laravel-backup": "^8.5",
+        "spatie/laravel-medialibrary": "^11.4",
+        "spatie/laravel-query-builder": "^5.7",
+        "spatie/laravel-data": "^4.6",
+        "spatie/laravel-sluggable": "^3.5",
+
+        "barryvdh/laravel-dompdf": "^2.2",
+        "maatwebsite/excel": "^3.1",
+        "phpoffice/phpspreadsheet": "^2.2",
+        "intervention/image": "^3.7",
+        "intervention/image-laravel": "^1.3",
+
+        "pragmarx/google2fa-laravel": "^2.2",
+        "pragmarx/google2fa-qrcode": "^3.0",
+        "simplesoftwareio/simple-qrcode": "^4.2",
+        "bacon/bacon-qr-code": "^2.0",
+
         "league/flysystem-aws-s3-v3": "^3.0",
-        "intervention/image": "^3.0",
-        "propaganistas/laravel-phone": "^5.0",
+        "league/flysystem-sftp-v3": "^3.0",
+        "league/csv": "^9.16",
+        "league/oauth2-server": "^8.5",
+
         "darkaonline/l5-swagger": "^8.6",
-        "php-open-source-saver/jwt-auth": "^2.3"
+
+        "aws/aws-sdk-php": "^3.296",
+
+        "paragonie/constant_time_encoding": "^2.6",
+        "paragonie/random_compat": "^2.0",
+
+        "laravel/horizon": "^5.24",
+        "laravel/telescope": "^5.0",
+        "laravel/scout": "^10.8",
+
+        "nnjeim/world": "^1.1",
+
+        "propaganistas/laravel-phone": "^5.2",
+        "webpatser/laravel-uuid": "^4.0",
+
+        "knplabs/knp-snappy": "^1.4",
+
+        "torann/geoip": "^3.0",
+
+        "fruitcake/laravel-cors": "^3.0",
+
+        "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.24.1",
-        "laravel/pint": "^1.20.0",
-        "laravel/sail": "^1.55.0",
-        "mockery/mockery": "^1.6.12",
-        "nunomaduro/collision": "^7.12.0",
-        "phpunit/phpunit": "^10.5.63",
-        "spatie/laravel-ignition": "^2.9.1",
-        "psr/simple-cache": "^3.0.0"
+        "fakerphp/faker": "^1.23",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.26",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^7.10",
+        "phpunit/phpunit": "^10.5",
+        "spatie/laravel-ignition": "^2.4",
+        "brianium/paratest": "^7.3",
+        "pestphp/pest": "^2.34",
+        "pestphp/pest-plugin-laravel": "^2.3",
+        "phpstan/phpstan": "^1.10",
+        "larastan/larastan": "^2.9"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +83,7 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/IndiaHelpers.php"
+            "app/helpers.php"
         ]
     },
     "autoload-dev": {
@@ -68,12 +103,19 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
-        ]
+            "@php artisan key:generate --ansi",
+            "@php artisan storage:link --ansi"
+        ],
+        "lint": "pint",
+        "test": "phpunit --testdox",
+        "test-parallel": "paratest --processes=4",
+        "analyse": "phpstan analyse --memory-limit=2G"
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {
