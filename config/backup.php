@@ -178,7 +178,7 @@ return [
             /*
              * This class will be used to send all notifications.
              */
-            'handler' => Spatie\Backup\Notifications\Notifier::class,
+            'handler' => Spatie\Backup\Notifications\Notification::class,
 
             /*
              * Here you can specify the ways you want to be notified when certain

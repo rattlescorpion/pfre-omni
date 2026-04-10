@@ -22,7 +22,7 @@ class ERegistrationApiController extends BaseApiController
     public function index(Request $request): JsonResponse
     {
         // Filters by project_id, status, or date range
-        $data = $this->service->getAll($request->all()); 
+        $data = $this->service->getAll(); 
         
         return $this->sendResponse(
             ERegistrationResource::collection($data), 
