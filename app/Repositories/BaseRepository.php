@@ -15,6 +15,23 @@ abstract class BaseRepository
     protected string $table;
 
     /**
+     * An optional list of mass-assignable fields.
+     * Child repositories may override this to enforce allowlists.
+     */
+    protected array $fillable = [];
+
+    /**
+     * Default guarded fields that should never be written via repository input.
+     */
+    protected array $guarded = [
+        'id',
+        'uuid',
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    /**
      * Get all records from the table, ordered by newest first.
      */
     public function getAll(): Collection
@@ -46,7 +63,7 @@ abstract class BaseRepository
      */
     public function create(array $data): array
     {
-        $sanitizedData = collect($data)->except(['_token', '_method'])->toArray();
+        $sanitizedData = $this->sanitizeData($data);
 
         // 2. Add UUID and Timestamps
         $sanitizedData['uuid'] = $sanitizedData['uuid'] ?? Str::uuid()->toString();
@@ -66,7 +83,7 @@ abstract class BaseRepository
         $actualId = is_array($id) ? ($id['id'] ?? 0) : $id;
 
         // Filter out fields that don't belong in the database
-        $sanitizedData = collect($data)->except(['_token', '_method'])->toArray();
+        $sanitizedData = $this->sanitizeData($data);
 
         return (bool) DB::table($this->table)
             ->where('id', $actualId)
@@ -83,5 +100,20 @@ abstract class BaseRepository
         return (bool) DB::table($this->table)
             ->where('id', $actualId)
             ->delete();
+    }
+
+    protected function sanitizeData(array $data): array
+    {
+        $sanitized = collect($data)
+            ->except(array_merge(['_token', '_method'], $this->guarded))
+            ->toArray();
+
+        if (empty($this->fillable)) {
+            return $sanitized;
+        }
+
+        return collect($sanitized)
+            ->only($this->fillable)
+            ->toArray();
     }
 }

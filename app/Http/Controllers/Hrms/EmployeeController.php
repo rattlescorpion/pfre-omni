@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Hrms;
 
 use App\Http\Controllers\Controller;
 use App\Services\Hrms\EmployeeService;
+use App\Http\Requests\Hrms\StoreEmployeeRequest;
 use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
@@ -22,9 +23,9 @@ class EmployeeController extends Controller
         return view('hrms.employees.create');
     }
 
-    public function store(Request $request)
+    public function store(StoreEmployeeRequest $request)
     {
-        $this->service->create($request->all(), auth()->id() ?? 1);
+        $this->service->create($request->validated(), auth()->id() ?? 1);
         return redirect('/employees')->with('success', 'Employee onboarded successfully.');
     }
 }

@@ -10,6 +10,26 @@ class LeadRepository extends BaseRepository
     protected string $table = 'leads';
 
     /**
+     * Define mass-assignable fields for leads.
+     */
+    protected array $fillable = [
+        'name',
+        'phone',
+        'email',
+        'intent',
+        'stage',
+        'assigned_to',
+        'assigned_at',
+        'source',
+        'budget_min',
+        'budget_max',
+        'property_type',
+        'location',
+        'notes',
+        'status',
+    ];
+
+    /**
      * Keep only lead-specific logic here.
      */
     public function getNextAgentInQueue(): ?int

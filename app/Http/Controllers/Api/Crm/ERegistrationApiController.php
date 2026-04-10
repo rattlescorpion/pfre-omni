@@ -53,7 +53,7 @@ class ERegistrationApiController extends BaseApiController
      */
     public function update(Request $request, int $id): JsonResponse
     {
-        $record = $this->service->update($id, $request->all(), auth()->id());
+        $record = $this->service->update($id, $request->except(['_token', '_method']), auth()->id());
 
         return $this->sendResponse(
             new ERegistrationResource((object)$record),

@@ -17,13 +17,17 @@ use App\Http\Controllers\Api\Auth\AuthApiController;
 
 Route::prefix('v1')->group(function () {
 
-    // 1. AUTHENTICATION (Public)
-    Route::post('/login', [AuthApiController::class, 'login']);
-    Route::post('/register', [AuthApiController::class, 'register']);
+    // 1. AUTHENTICATION (Public) - Rate limited
+    Route::middleware('throttle:auth')->group(function () {
+        Route::post('/login', [AuthApiController::class, 'login']);
+        Route::post('/register', [AuthApiController::class, 'register']);
+    });
 
     // 2. PUBLIC PROPERTY SEARCH (SEO/Marketing optimized)
-    Route::get('/properties/search', [PropertyApiController::class, 'search']);
-    Route::get('/properties/{uuid}', [PropertyApiController::class, 'show']);
+    Route::middleware('throttle:api')->group(function () {
+        Route::get('/properties/search', [PropertyApiController::class, 'search']);
+        Route::get('/properties/{uuid}', [PropertyApiController::class, 'show']);
+    });
 
     // ---------------------------------------------------------
     // PROTECTED ENTERPRISE ROUTES (Requires Sanctum Token)
@@ -37,10 +41,12 @@ Route::prefix('v1')->group(function () {
         // CLUSTER 1: CRM (Leads & eRegistrations)
         Route::prefix('crm')->group(function () {
             Route::apiResource('leads', LeadApiController::class);
-            
-            // eRegistration Module (The 33-field Master)
+
+            // eRegistration Module (The 33-field Master) - Critical operations
+            Route::middleware('throttle:critical')->group(function () {
+                Route::post('/registrations', [ERegistrationApiController::class, 'store']);
+            });
             Route::get('/registrations', [ERegistrationApiController::class, 'index']);
-            Route::post('/registrations', [ERegistrationApiController::class, 'store']);
             Route::get('/registrations/{id}', [ERegistrationApiController::class, 'show']);
         });
 

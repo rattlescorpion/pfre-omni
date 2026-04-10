@@ -21,16 +21,16 @@ final class LeadController extends Controller
     public function store(Request $request)
     {
         // Check to make sure the user didn't leave required fields blank
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:150',
             'phone' => 'required|string|max:15',
         ]);
 
         // We use a dummy ID of 1 since we haven't built the login screen yet
-        $dummyUserId = 1; 
-        
-        // Hand the data over to your heavy-duty Service engine to save it to the database
-        $this->leadService->create($request->all(), $dummyUserId);
+        $dummyUserId = 1;
+
+        // Hand the validated data over to the service layer
+        $this->leadService->create($validated, $dummyUserId);
 
         // Send the user back to the dashboard so they can see the counter go up!
         return redirect('/dashboard');

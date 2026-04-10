@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Crm;
 
 use App\Http\Controllers\Controller;
 use App\Services\Crm\TaskService;
+use App\Http\Requests\Crm\StoreTaskRequest;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -17,15 +18,15 @@ class TaskController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
-        $this->service->create($request->all(), auth()->id() ?? 1);
+        $this->service->create($request->validated(), auth()->id() ?? 1);
         return back()->with('success', 'Task scheduled.');
     }
 
     public function update(Request $request, $id)
     {
-        $this->service->update($id, $request->all());
+        $this->service->update($id, $request->except(['_token', '_method']));
         return back();
     }
 }
