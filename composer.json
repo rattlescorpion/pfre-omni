@@ -7,74 +7,72 @@
     "require": {
         "php": "^8.2",
 
-        "laravel/framework": "^10.48",
-        "laravel/sanctum": "^3.3",
-        "laravel/tinker": "^2.9",
+        "laravel/framework": "^10.50.2",
+        "laravel/sanctum": "^3.3.3",
+        "laravel/tinker": "^2.11.1",
 
-        "guzzlehttp/guzzle": "^7.8",
-        "predis/predis": "^2.2",
+        "guzzlehttp/guzzle": "^7.10.0",
+        "predis/predis": "^2.4.1",
 
-        "spatie/laravel-permission": "^6.3",
-        "spatie/laravel-activitylog": "^4.8",
-        "spatie/laravel-backup": "^8.5",
-        "spatie/laravel-medialibrary": "^11.4",
-        "spatie/laravel-query-builder": "^5.7",
-        "spatie/laravel-data": "^4.6",
-        "spatie/laravel-sluggable": "^3.5",
+        "spatie/laravel-permission": "^6.25.0",
+        "spatie/laravel-activitylog": "^4.12.3",
+        "spatie/laravel-backup": "^8.8.2",
+        "spatie/laravel-medialibrary": "^11.21.0",
+        "spatie/laravel-query-builder": "^5.8.1",
+        "spatie/laravel-data": "^4.21.0",
+        "spatie/laravel-sluggable": "^3.8.1",
 
-        "barryvdh/laravel-dompdf": "^2.2",
-        "maatwebsite/excel": "^3.1",
-        "phpoffice/phpspreadsheet": "^2.2",
-        "intervention/image": "^3.7",
-        "intervention/image-laravel": "^1.3",
+        "barryvdh/laravel-dompdf": "^2.2.0",
+        "maatwebsite/excel": "^3.1.68",
+        "phpoffice/phpspreadsheet": "^1.30.3",
+        "intervention/image": "^3.11.7",
+        "intervention/image-laravel": "^1.5.9",
 
-        "pragmarx/google2fa-laravel": "^2.2",
-        "pragmarx/google2fa-qrcode": "^3.0",
-        "simplesoftwareio/simple-qrcode": "^4.2",
-        "bacon/bacon-qr-code": "^2.0",
+        "pragmarx/google2fa-laravel": "^2.3.1",
+        "pragmarx/google2fa-qrcode": "^3.0.1",
+        "simplesoftwareio/simple-qrcode": "^4.2.0",
+        "bacon/bacon-qr-code": "^2.0.8",
 
-        "league/flysystem-aws-s3-v3": "^3.0",
-        "league/flysystem-sftp-v3": "^3.0",
-        "league/csv": "^9.16",
-        "league/oauth2-server": "^8.5",
+        "league/flysystem-aws-s3-v3": "^3.32.0",
+        "league/flysystem-sftp-v3": "^3.33.0",
+        "league/csv": "^9.28.0",
+        "league/oauth2-server": "^8.5.5",
 
-        "darkaonline/l5-swagger": "^8.6",
+        "darkaonline/l5-swagger": "^8.6.5",
 
-        "aws/aws-sdk-php": "^3.296",
+        "aws/aws-sdk-php": "^3.378.1",
 
-        "paragonie/constant_time_encoding": "^2.6",
-        "paragonie/random_compat": "^2.0",
+        "paragonie/constant_time_encoding": "^2.8.2",
+        "paragonie/random_compat": "^2.0.21",
 
-        "laravel/horizon": "^5.24",
-        "laravel/telescope": "^5.0",
-        "laravel/scout": "^10.8",
+        "laravel/horizon": "^5.45.5",
+        "laravel/telescope": "^4.17.6",
+        "laravel/scout": "^10.25.0",
 
-        "nnjeim/world": "^1.1",
+        "nnjeim/world": "^1.1.38",
 
-        "propaganistas/laravel-phone": "^5.2",
-        "webpatser/laravel-uuid": "^4.0",
+        "propaganistas/laravel-phone": "^5.3.6",
+        "webpatser/laravel-uuid": "^4.0.2",
 
-        "knplabs/knp-snappy": "^1.4",
+        "knplabs/knp-snappy": "^1.6.0",
 
-        "torann/geoip": "^3.0",
+        "torann/geoip": "^3.0.9",
 
-        "fruitcake/laravel-cors": "^3.0",
-
-        "pusher/pusher-php-server": "^7.2"
+        "pusher/pusher-php-server": "^7.2.7"
     },
     "require-dev": {
-        "fakerphp/faker": "^1.23",
-        "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
-        "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^7.10",
-        "phpunit/phpunit": "^10.5",
-        "spatie/laravel-ignition": "^2.4",
-        "brianium/paratest": "^7.3",
-        "pestphp/pest": "^2.34",
-        "pestphp/pest-plugin-laravel": "^2.3",
-        "phpstan/phpstan": "^1.10",
-        "larastan/larastan": "^2.9"
+        "fakerphp/faker": "^1.24.1",
+        "laravel/pint": "^1.29.0",
+        "laravel/sail": "^1.56.0",
+        "mockery/mockery": "^1.6.12",
+        "nunomaduro/collision": "^7.12.0",
+        "phpunit/phpunit": "^10.5.63",
+        "spatie/laravel-ignition": "^2.9.1",
+        "brianium/paratest": "^7.4.9",
+        "pestphp/pest": "^2.36.1",
+        "pestphp/pest-plugin-laravel": "^2.4.0",
+        "phpstan/phpstan": "^1.12.33",
+        "larastan/larastan": "^2.11.2"
     },
     "autoload": {
         "psr-4": {
