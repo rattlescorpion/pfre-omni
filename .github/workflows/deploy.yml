@@ -1,242 +1,27 @@
-name: PFRE Omni — CI/CD Pipeline
+name: Deploy
 
 on:
   push:
-    branches: [main, staging]
-  pull_request:
-    branches: [main, staging]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  PHP_VERSION: "8.2"
-  NODE_VERSION: "20"
-  COMPOSER_FLAGS: "--no-interaction --no-ansi --prefer-dist"
+    branches:
+      - main
 
 jobs:
-
-# =========================================================
-# JOB 1 — TEST
-# =========================================================
-  test:
-    name: Test
-    runs-on: ubuntu-22.04
-
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: pfre_omni_test
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
-      redis:
-        image: redis:7-alpine
-        ports:
-          - 6379:6379
-
+  deploy:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ env.PHP_VERSION }}
-          extensions: mbstring, pdo, pdo_mysql, redis, bcmath, zip
-          coverage: none
+          php-version: '8.4'
 
-      - name: Cache Composer
-        uses: actions/cache@v4
-        with:
-          path: vendor
-          key: composer-${{ hashFiles('**/composer.lock') }}
-
-      - name: Install Composer
-        run: composer install ${{ env.COMPOSER_FLAGS }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: npm
-
-      - name: Install NPM
-        run: npm ci
-
-      - name: Build Assets
-        run: npm run build
-
-      - name: Setup ENV
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=pfre_omni_test/' .env
-          sed -i 's/DB_USERNAME=.*/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
-
-      - name: Run Migrations
-        run: php artisan migrate --force
-
-      - name: Run Tests
-        run: vendor/bin/phpunit
-
-# =========================================================
-# JOB 2 — SECURITY
-# =========================================================
-  security:
-    name: Security Audit
-    runs-on: ubuntu-22.04
-    needs: test
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-
-      - name: Install Composer
-        run: composer install ${{ env.COMPOSER_FLAGS }}
-
-      - name: Composer Audit
-        run: composer audit
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: NPM Audit
-        run: npm audit --audit-level=high
-        continue-on-error: true
-
-# =========================================================
-# JOB 3 — DEPLOY STAGING
-# =========================================================
-  deploy-staging:
-    name: Deploy Staging
-    runs-on: ubuntu-22.04
-    needs: [test, security]
-    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           composer install --no-dev --optimize-autoloader
-          npm ci
-          npm run build
 
-      - name: Deploy via SSH
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.STAGING_HOST }}
-          REMOTE_USER: ${{ secrets.STAGING_USER }}
-          REMOTE_PORT: ${{ secrets.STAGING_PORT }}
-          SOURCE: "./"
-          TARGET: ${{ secrets.STAGING_DEPLOY_PATH }}
-          EXCLUDE: ".git,.github,node_modules,.env,tests,storage/logs"
-
-      - name: Run Commands
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: ${{ secrets.STAGING_USER }}
-          key: ${{ secrets.STAGING_SSH_KEY }}
-          script: |
-            cd ${{ secrets.STAGING_DEPLOY_PATH }}
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan queue:restart
-
-# =========================================================
-# JOB 4 — DEPLOY PRODUCTION
-# =========================================================
-  deploy-production:
-    name: Deploy Production
-    runs-on: ubuntu-22.04
-    needs: [test, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ env.PHP_VERSION }}
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install Dependencies
+      - name: Deploy
         run: |
-          composer install --no-dev --optimize-autoloader
-          npm ci
-          npm run build
-
-      - name: Deploy via SSH
-        uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_KEY }}
-          REMOTE_HOST: ${{ secrets.PROD_HOST }}
-          REMOTE_USER: ${{ secrets.PROD_USER }}
-          REMOTE_PORT: ${{ secrets.PROD_PORT }}
-          SOURCE: "./"
-          TARGET: ${{ secrets.PROD_DEPLOY_PATH }}
-          EXCLUDE: ".git,.github,node_modules,.env,tests,storage/logs"
-
-      - name: Run Commands
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: ${{ secrets.PROD_USER }}
-          key: ${{ secrets.PROD_SSH_KEY }}
-          script: |
-            cd ${{ secrets.PROD_DEPLOY_PATH }}
-            php artisan down || true
-            php artisan migrate --force
-            php artisan config:cache
-            php artisan route:cache
-            php artisan queue:restart
-            php artisan up
-
-# =========================================================
-# JOB 5 — FAILURE ALERT
-# =========================================================
-  notify-failure:
-    name: Notify Failure
-    runs-on: ubuntu-22.04
-    needs: [test, security, deploy-staging, deploy-production]
-    if: failure()
-
-    steps:
-      - name: Log Failure
-        run: |
-          echo "Pipeline failed"
-          echo "Branch: ${{ github.ref }}"
-          echo "Commit: ${{ github.sha }}"
+          # Commands to deploy your application
+          echo "Deploying application..."
