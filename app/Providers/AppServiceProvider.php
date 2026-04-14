@@ -26,31 +26,37 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // 1. Force HTTPS in Production
-        if (config('app.env') === 'production') {
-            URL::forceScheme('https');
-        }
-
-        // 2. Configure Rate Limiters for PFRE-Omni API
+        // 1. Configure Rate Limiters for PFRE-Omni API
         $this->configureRateLimiting();
 
-        // 3. Enable database query logging for local debugging/monitoring
+        // 2. Enable database query logging for local debugging/monitoring
         if (config('app.debug') || config('app.env') === 'local') {
             QueryLogger::enable();
         }
 
-        // 4. Validate Environment Security Settings
-        $envValidation = EnvironmentValidator::validate();
-        $fileValidation = EnvironmentValidator::checkFilePermissions();
+        // ---------------------------------------------------------
+        // WEB-ONLY CHECKS (Bypass during console commands / CI/CD)
+        // ---------------------------------------------------------
+        if (! $this->app->runningInConsole()) {
+            
+            // 3. Force HTTPS in Production
+            if (config('app.env') === 'production') {
+                URL::forceScheme('https');
+            }
 
-        // In production, enforce zero-tolerance for critical security flaws
-        if (config('app.env') === 'production' && (!$envValidation['valid'] || !empty($fileValidation['issues']))) {
-            $criticalIssues = array_merge($envValidation['issues'], $fileValidation['issues'] ?? []);
-            throw new \RuntimeException('Critical security issues detected on PFRE-Omni: ' . implode(', ', $criticalIssues));
+            // 4. Validate Environment Security Settings
+            $envValidation = EnvironmentValidator::validate();
+            $fileValidation = EnvironmentValidator::checkFilePermissions();
+
+            // In production, enforce zero-tolerance for critical security flaws
+            if (config('app.env') === 'production' && (!$envValidation['valid'] || !empty($fileValidation['issues']))) {
+                $criticalIssues = array_merge($envValidation['issues'], $fileValidation['issues'] ?? []);
+                throw new \RuntimeException('Critical security issues detected on PFRE-Omni: ' . implode(', ', $criticalIssues));
+            }
+
+            // 5. Validate SSL/TLS configuration
+            SSLValidator::validate();
         }
-
-        // 5. Validate SSL/TLS configuration
-        SSLValidator::validate();
     }
 
     /**
