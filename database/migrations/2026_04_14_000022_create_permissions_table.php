@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      * This table allows for granular control over the PFRE-Omni platform.
@@ -23,10 +22,12 @@ return new class extends Migration
 
         // 2. Pivot table: Permission - Role (Many-to-Many)
         // This links specific capabilities to the roles created in migration #21
-        Schema::create('permission_role', function (Blueprint $table) {
+        Schema::create('permissions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('permission_id')->constrained()->onDelete('cascade');
-            $table->foreignId('role_id')->constrained()->onDelete('cascade');
+            $table->string('name');
+            $table->string('guard_name')->default('web'); // ADD THIS LINE
+            $table->string('display_name')->nullable();
+            $table->string('module')->nullable();
             $table->timestamps();
         });
     }

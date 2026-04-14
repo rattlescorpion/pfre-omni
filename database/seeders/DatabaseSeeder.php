@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // 1. Clear caches before seeding to prevent permission errors
-        app()[\Spate\Permission\PermissionRegistrar::class]->forgetCachedPermissions() ?? null;
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions() ?? null;
 
         // 2. Seed System Settings (Migration #20)
         $this->command->info('Seeding System Settings...');
