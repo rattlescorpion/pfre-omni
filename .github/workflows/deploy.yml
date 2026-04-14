@@ -17,7 +17,7 @@ jobs:
         with:
           # Note: PHP 8.4 is the current stable high version. 
           # 8.5 is experimental/dev as of early 2026.
-          php-version: '8.5' 
+          php-version: '8.4' 
           extensions: mbstring, xml, ctype, iconv, mysql, zip
           coverage: xdebug
 
