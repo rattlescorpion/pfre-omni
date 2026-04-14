@@ -40,12 +40,12 @@
 
         "darkaonline/l5-swagger": "^8.6.5",
 
-        "aws/aws-sdk-php": "^3.378.1",
+        "aws/aws-sdk-php": "^3.379.0",
 
         "paragonie/constant_time_encoding": "^2.8.2",
         "paragonie/random_compat": "^2.0.21",
 
-        "laravel/horizon": "^5.45.5",
+        "laravel/horizon": "^5.45.6",
         "laravel/telescope": "^4.17.6",
         "laravel/scout": "^10.25.0",
 
@@ -56,14 +56,14 @@
 
         "knplabs/knp-snappy": "^1.6.0",
 
-        "torann/geoip": "^3.0.9",
+        "torann/geoip": "^3.0.10",
 
         "pusher/pusher-php-server": "^7.2.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.24.1",
         "laravel/pint": "^1.29.0",
-        "laravel/sail": "^1.56.0",
+        "laravel/sail": "^1.57.0",
         "mockery/mockery": "^1.6.12",
         "nunomaduro/collision": "^7.12.0",
         "phpunit/phpunit": "^10.5.63",

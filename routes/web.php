@@ -85,4 +85,4 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 // Include Laravel Breeze/Jetstream Auth Routes
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
