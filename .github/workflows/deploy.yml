@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# Global environment variables
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -15,17 +19,17 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          # Note: PHP 8.4 is the current stable high version. 
-          # 8.5 is experimental/dev as of early 2026.
-          php-version: '8.4' 
-          extensions: mbstring, xml, ctype, iconv, mysql, zip
+          php-version: '8.4'
+          extensions: mbstring, xml, ctype, iconv, mysqli, pdo_mysql, zip
           coverage: xdebug
 
       - name: Install dependencies
         run: |
           composer install --no-dev --optimize-autoloader --no-interaction --no-progress
 
-      - name: Deploy
+      - name: Deploy application
         run: |
-          # Commands to deploy your application
           echo "Deploying application..."
+          # Add your real deployment commands below
+          # e.g. php artisan migrate --force
+          # e.g. rsync -avz ./ user@server:/path/to/app
