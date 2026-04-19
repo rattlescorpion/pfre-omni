@@ -6,26 +6,29 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     * This pivot table allows for "Direct Permissions" - assigning a specific 
-     * capability directly to a user, bypassing their assigned roles.
-     */
     public function up(): void
     {
-        Schema::create('permission_user', function (Blueprint $table) {
+        // 1. Pivot table linking Users to Roles
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('permission_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
+            $table->timestamps();
+        });
+
+        // 2. Pivot table linking Users to specific Permissions (Overrides)
+        Schema::create('user_permissions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('permission_id')->constrained('permissions')->cascadeOnDelete();
+            $table->boolean('is_granted')->default(true);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('permission_user');
+        Schema::dropIfExists('user_permissions');
+        Schema::dropIfExists('user_roles');
     }
 };
