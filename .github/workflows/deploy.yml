@@ -16,6 +16,19 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4 # Updated to v4 for better performance/security
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cache npm
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -23,13 +36,34 @@ jobs:
           extensions: mbstring, xml, ctype, iconv, mysqli, pdo_mysql, zip
           coverage: xdebug
 
-      - name: Install dependencies
+      - name: Cache Composer
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/composer
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
         run: |
-          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          composer install --prefer-dist --optimize-autoloader --no-interaction --no-progress
+
+      - name: Install JavaScript dependencies
+        run: |
+          npm ci
+
+      - name: Build assets
+        run: |
+          npm run build
+
+      - name: Run PHP tests
+        run: |
+          php artisan test --no-interaction
 
       - name: Deploy application
         run: |
           echo "Deploying application..."
           # Add your real deployment commands below
-          # e.g. php artisan migrate --force
-          # e.g. rsync -avz ./ user@server:/path/to/app
+          # Example:
+          # ssh user@server "cd /path/to/app && php artisan migrate --force && php artisan config:cache && php artisan route:cache"
+          # rsync -avz --delete ./ user@server:/path/to/app
