@@ -49,6 +49,7 @@ This file helps AI coding agents understand the PFRE-Omni repository, avoid unne
 - `tests/Feature/` and `tests/Unit/` for existing test patterns.
 - `.github/workflows/deploy.yml` for the GitHub Actions deployment pipeline.
 - `.github/agents/code-review.agent.md` for the repository's Laravel/PHP code review agent.
+- `.github/agents/deployment.agent.md` for workflow and CI/CD review guidance.
 
 ## Important guidance
 - The codebase is proprietary: keep changes contained to this repository and do not introduce external code or public service assumptions unless explicitly asked.

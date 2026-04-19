@@ -6,6 +6,8 @@ This repository is a Laravel 10 / PHP 8.4 enterprise real-estate platform with a
 - `AGENTS.md` — repository-specific agent guidance and conventions
 - `README.md` — setup, environment configuration, module description, and deployment notes
 - `.github/agents/code-review.agent.md` — code review agent for Laravel/PHP reviews
+- `.github/agents/deployment.agent.md` — GitHub Actions workflow and CI/CD guidance
+- `.github/workflows/deploy.yml` — deployment workflow reference
 
 ## Key commands
 - `composer install --no-interaction --prefer-dist --optimize-autoloader`

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Updated to v4 for better performance/security
+        uses: actions/checkout@v4
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -44,9 +44,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-composer-
 
-      - name: Install PHP dependencies
+      # FIX: Removed --no-dev here so testing tools are installed
+      - name: Install PHP dependencies (With Dev Tools)
         run: |
-          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          composer install --prefer-dist --optimize-autoloader --no-interaction --no-progress
 
       - name: Install JavaScript dependencies
         run: |
@@ -64,8 +65,12 @@ jobs:
       - name: Run Tests
         run: php artisan test
 
-      - name: Deploy application
+      # FIX: Run composer --no-dev right before deployment to clean up
+      - name: Prepare for Production & Deploy
         run: |
+          echo "Removing dev dependencies before deployment..."
+          composer install --no-dev --optimize-autoloader --no-interaction --no-progress
+          
           echo "Deploying application..."
           # Add your real deployment commands below
           # Example:
