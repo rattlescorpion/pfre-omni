@@ -1,9 +1,7 @@
-version: "3.9"
-
 # ===========================================================================
 # Property Finder Omni Platform — Docker Compose (Local Development)
 # ===========================================================================
-# Services: PHP 8.2-FPM, Nginx, MySQL 8.0, Redis 7, Mailpit, Node (Vite)
+# Services: PHP 8.4-FPM, Nginx, MySQL 8.0, Redis 7, Mailpit, Node (Vite)
 # Usage: docker compose up -d
 # ===========================================================================
 
@@ -22,14 +20,14 @@ volumes:
 services:
 
   # ---------------------------------------------------------------------------
-  # PHP 8.2 FPM Application Server
+  # PHP 8.4 FPM Application Server
   # ---------------------------------------------------------------------------
   app:
     build:
       context: .
       dockerfile: .docker/Dockerfile
       args:
-        PHP_VERSION: "8.2"
+        PHP_VERSION: "8.4"
     container_name: pfre_app
     restart: unless-stopped
     working_dir: /var/www/html
@@ -90,8 +88,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
       MYSQL_DATABASE: ${DB_DATABASE:-pfre_omni}
-      MYSQL_USER: ${DB_USERNAME:-pfre}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      #MYSQL_USER: ${DB_USERNAME:-pfre}
+      #MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
       MYSQL_CHARSET: utf8mb4
       MYSQL_COLLATION: utf8mb4_unicode_ci
     volumes:
