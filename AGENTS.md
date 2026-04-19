@@ -50,11 +50,19 @@ This file helps AI coding agents understand the PFRE-Omni repository, avoid unne
 - `.github/workflows/deploy.yml` for the GitHub Actions deployment pipeline.
 - `.github/agents/code-review.agent.md` for the repository's Laravel/PHP code review agent.
 - `.github/agents/deployment.agent.md` for workflow and CI/CD review guidance.
+- `.github/agents/frontend.agent.md` for Vue/Blade/Tailwind UI development.
 
 ## Important guidance
 - The codebase is proprietary: keep changes contained to this repository and do not introduce external code or public service assumptions unless explicitly asked.
 - Always preserve `.env.example` semantics and note that environment setup is required for local execution.
 - Use `storage/app/documents/` and `storage/app/reports/` as the generated content directories when reasoning about file storage.
+
+## Frontend conventions (UI/UX agents)
+- Blade templates live in `resources/views/`, organized by domain (CRM, HRMS, leads, properties, etc.).
+- Use Tailwind CSS 3.4 utilities instead of custom CSS where possible.
+- Alpine.js handles lightweight client-side interactivity; Vue 5 is available for complex components.
+- Integrate with existing UI libraries: Chart.js, FullCalendar, DataTables, Leaflet, Select2.
+- Build with `npm run dev` (hot reload) or `npm run build` (production).
 
 ## Link references
 - `README.md` for full installation, environment configuration, and module description.

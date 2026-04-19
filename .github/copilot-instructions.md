@@ -7,6 +7,7 @@ This repository is a Laravel 10 / PHP 8.4 enterprise real-estate platform with a
 - `README.md` — setup, environment configuration, module description, and deployment notes
 - `.github/agents/code-review.agent.md` — code review agent for Laravel/PHP reviews
 - `.github/agents/deployment.agent.md` — GitHub Actions workflow and CI/CD guidance
+- `.github/agents/frontend.agent.md` — Vue/Blade/Tailwind UI/UX development
 - `.github/workflows/deploy.yml` — deployment workflow reference
 
 ## Key commands
