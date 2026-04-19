@@ -58,7 +58,7 @@ jobs:
 
       - name: Run PHP tests
         run: |
-          php artisan test --no-interaction
+          php artisan test
 
       - name: Deploy application
         run: |
