@@ -8,7 +8,7 @@
   <a href="https://github.com/rattlescorpion/pfre-omni/actions">
     <img src="https://github.com/rattlescorpion/pfre-omni/workflows/CI/badge.svg" alt="CI Status" />
   </a>
-  <img src="https://img.shields.io/badge/PHP-8.2-blue?logo=php" alt="PHP 8.2" />
+  <img src="https://img.shields.io/badge/PHP-8.4-blue?logo=php" alt="PHP 8.4" />
   <img src="https://img.shields.io/badge/Laravel-10.x-red?logo=laravel" alt="Laravel 10" />
   <img src="https://img.shields.io/badge/MySQL-8.0-orange?logo=mysql" alt="MySQL 8.0" />
   <img src="https://img.shields.io/badge/Redis-7.x-red?logo=redis" alt="Redis" />
@@ -38,6 +38,7 @@
 - [Deployment](#deployment)
 - [Security](#security)
 - [Contributing](#contributing)
+- [Claude Skills](#claude-skills)
 - [License](#license)
 
 ---
@@ -52,7 +53,7 @@ The platform handles the full lifecycle of a real estate business — from lead 
 
 ## Platform Architecture
 
-```
+```text
 pfre-omni/
 ├── app/
 │   ├── Console/          # 141 scheduled Artisan commands
@@ -85,8 +86,6 @@ pfre-omni/
     └── Feature/
 ```
 
----
-
 ## Module Clusters
 
 | # | Cluster | Modules |
@@ -115,13 +114,11 @@ pfre-omni/
 | 22 | **Configuration & Settings** | Multi-tenant, Roles, Permissions |
 | 23–26 | *(Infrastructure clusters)* | BBPS, MCA, Audit, Integrations |
 
----
-
 ## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
-| **Framework** | Laravel 10.x (PHP 8.2) |
+| **Framework** | Laravel 10.x (PHP 8.4) |
 | **Database** | MySQL 8.0 |
 | **Cache** | Redis 7.x |
 | **Queue** | Laravel Horizon (Redis) |
@@ -138,18 +135,14 @@ pfre-omni/
 | **CI/CD** | GitHub Actions |
 | **Containers** | Docker + Docker Compose |
 
----
-
 ## Requirements
 
-- PHP >= 8.2 with extensions: `bcmath`, `ctype`, `curl`, `dom`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `zip`
+- PHP >= 8.4 with extensions: `bcmath`, `ctype`, `curl`, `dom`, `fileinfo`, `json`, `mbstring`, `openssl`, `pdo`, `tokenizer`, `xml`, `zip`
 - MySQL >= 8.0
 - Redis >= 7.0
 - Node.js >= 18.x + npm
 - Composer >= 2.6
 - Meilisearch (optional, for full-text property search)
-
----
 
 ## Installation
 
@@ -181,8 +174,6 @@ php artisan storage:link
 php artisan serve
 ```
 
----
-
 ## Environment Configuration
 
 Copy `.env.example` to `.env` and configure the following sections:
@@ -201,8 +192,6 @@ Copy `.env.example` to `.env` and configure the following sections:
 
 Refer to `.env.example` for the full list of required variables with inline documentation.
 
----
-
 ## Database Setup
 
 ```bash
@@ -218,8 +207,6 @@ php artisan db:seed
 # Seed specific module (example)
 php artisan db:seed --class=GstRateSeeder
 ```
-
----
 
 ## Queue & Horizon
 
@@ -242,8 +229,6 @@ Queue workers are split by priority:
 | `default` | Report generation, email |
 | `low` | Audit logs, analytics aggregation |
 
----
-
 ## Indian Compliance
 
 The platform includes built-in helpers in `app/Helpers/IndiaHelpers.php` for:
@@ -256,8 +241,6 @@ The platform includes built-in helpers in `app/Helpers/IndiaHelpers.php` for:
 - **Maharashtra Stamp Duty** — Ready Reckoner rate lookup
 - **PAN / Aadhaar** — Format validation
 - **IFSC** — Bank branch resolution
-
----
 
 ## Key Integrations
 
@@ -274,8 +257,6 @@ The platform includes built-in helpers in `app/Helpers/IndiaHelpers.php` for:
 | FCM | Mobile push notifications | `laravel-notification-channels/fcm` |
 | AWS S3 / Wasabi | Document and media storage | `league/flysystem-aws-s3-v3` |
 | Meilisearch | Full-text property search | `laravel/scout` |
-
----
 
 ## Scheduled Jobs
 
@@ -299,8 +280,6 @@ Start the scheduler:
 * * * * * cd /path/to/pfre-omni && php artisan schedule:run >> /dev/null 2>&1
 ```
 
----
-
 ## Testing
 
 ```bash
@@ -317,8 +296,6 @@ php artisan test --filter=CrmTest
 php artisan test --testsuite=Unit
 ```
 
----
-
 ## Docker Setup
 
 ```bash
@@ -326,7 +303,7 @@ php artisan test --testsuite=Unit
 docker-compose up -d --build
 
 # Services started:
-#   app       → PHP-FPM 8.2 (port 9000)
+#   app       → PHP-FPM 8.4 (port 9000)
 #   nginx     → Nginx (port 80, 443)
 #   mysql     → MySQL 8.0 (port 3306)
 #   redis     → Redis 7 (port 6379)
@@ -337,8 +314,6 @@ docker-compose up -d --build
 # Run migrations inside container
 docker-compose exec app php artisan migrate --seed
 ```
-
----
 
 ## Deployment
 
@@ -359,8 +334,6 @@ TELESCOPE_ENABLED=false   # Disable Telescope in production or restrict by IP
 
 Deployment is automated via GitHub Actions (`.github/workflows/deploy.yml`) on push to the `main` branch. The pipeline runs: lint → test → build → deploy with zero-downtime rolling restart.
 
----
-
 ## Security
 
 Security vulnerabilities in this platform should be reported **privately** to:
@@ -368,8 +341,6 @@ Security vulnerabilities in this platform should be reported **privately** to:
 **Email:** rattlescorpion@gmail.com
 
 Do not open public GitHub Issues for security vulnerabilities. All reports are acknowledged within 48 hours and patched within 7 business days.
-
----
 
 ## Contributing
 
@@ -381,7 +352,15 @@ This is a proprietary internal platform. External contributions are not accepted
 4. All PRs require review from at least one senior developer
 5. Run `php artisan test` and `./vendor/bin/pint` before raising a PR
 
----
+## Claude Skills
+
+This workspace includes local Claude prompt customization files under `.claude/skills/`.
+
+- `create-skill` — Generate a reusable skill definition file from a workflow, conversation, or prompt customization request.
+
+Example: create `.claude/skills/my-skill.md`, add frontmatter with `name` and `description`, then write the workflow guidance and example prompts.
+
+If you add new workspace skills, place them in `.claude/skills/` with frontmatter, concise guidance, activation conditions, and example prompts.
 
 ## License
 

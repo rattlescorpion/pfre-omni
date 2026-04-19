@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Enums\LeadTemperature;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany, HasOne};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 class Lead extends Model
 {
@@ -41,6 +42,7 @@ class Lead extends Model
         'assigned_at'           => 'datetime',
         'last_activity_at'      => 'datetime',
         'next_followup_at'      => 'datetime',
+        'temperature'           => LeadTemperature::class, // Enum Cast
     ];
 
     // ── Relationships ──────────────────────────────────────
@@ -87,7 +89,8 @@ class Lead extends Model
 
     public function scopeHot($query)
     {
-        return $query->where('temperature', 'hot');
+        // Search the database using the Enum's underlying string value
+        return $query->where('temperature', LeadTemperature::HOT->value);
     }
 
     public function scopeDueFollowup($query)
@@ -111,11 +114,8 @@ class Lead extends Model
 
     public function getTemperatureBadgeAttribute(): string
     {
-        return match($this->temperature) {
-            'hot'  => '<span class="badge-hot">🔥 Hot</span>',
-            'warm' => '<span class="badge-warm">☀️ Warm</span>',
-            default => '<span class="badge-cold">❄️ Cold</span>',
-        };
+        // Because of the cast, $this->temperature is already an Enum object
+        return $this->temperature?->badge() ?? LeadTemperature::COLD->badge();
     }
 
     public function addActivity(array $data): LeadActivity
