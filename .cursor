@@ -1,0 +1,90 @@
+# Cursor Rules
+
+This repository is a Laravel 10 / PHP 8.4 enterprise real-estate platform with multi-tenant modular architecture.
+
+## Key References
+- `AGENTS.md` — repository-specific agent guidance
+- `.github/agents/` — specialized agents for different development tasks
+- `README.md` — full setup and platform documentation
+
+## Quick Commands
+```bash
+composer install --no-interaction --prefer-dist --optimize-autoloader
+npm install && npm run build
+composer test && composer run-script analyse
+php artisan migrate --seed
+```
+
+## Code Organization
+- **Backend**: `app/Http/Controllers/`, `app/Services/`, `app/Models/`, `app/Jobs/`, `app/Events/`
+- **Frontend**: `resources/views/` (Blade by domain), `resources/js/` (Vue 5 + Alpine.js)
+- **Database**: `database/migrations/`, `database/seeders/`, `database/factories/`
+- **Tests**: `tests/Unit/`, `tests/Feature/`
+- **Routes**: `routes/api.php` (REST), `routes/web.php` (web)
+- **Config**: `config/pfre.php`, `config/integrations.php`, `config/whatsapp.php`, `config/razorpay.php`
+
+## Development Dos & Don'ts
+
+### Do
+- ✅ Use service classes in `app/Services/` for business logic
+- ✅ Validate changes with `composer test` and `composer run-script analyse`
+- ✅ Organize Blade templates by domain in `resources/views/`
+- ✅ Use Tailwind CSS utilities instead of custom CSS
+- ✅ Store generated files in `storage/app/documents/` or `storage/app/reports/`
+- ✅ Reference `.env.example` for configuration patterns
+- ✅ Keep REST routes aligned with `routes/api.php`
+
+### Don't
+- ❌ Hardcode configuration values (use `.env` and `config/`)
+- ❌ Add business logic directly to controllers
+- ❌ Modify `.github/workflows/deploy.yml` without explicit request
+- ❌ Introduce new package dependencies carelessly
+- ❌ Assume external services beyond those in `config/integrations.php`
+
+## Domain Clusters (26 clusters)
+CRM, Sales/Booking, Finance/Billing, GST/e-Invoice, RERA/MahaRERA, Legal/Agreements, HRMS, Payroll, Procurement, Facility Management, Society/HOA, White-Label (Clinic, School, Hotel, Retail), Warehouse, ITSM, Agriculture, Analytics, Notifications, Document Management, Configuration, BBPS, MCA, Audit.
+
+## Specialized Agents
+- **code-review** — Laravel/PHP code quality and security reviews
+- **deployment** — GitHub Actions workflow and CI/CD validation
+- **frontend** — Blade/Vue/Tailwind component development
+- **testing** — PHPUnit/Pest test creation and coverage
+- **database** — Migrations, models, seeding, schema design
+- **module** — Domain-specific feature development with Indian compliance
+- **environment** — Local development environment setup
+
+See `.github/agents/` for detailed guidelines per agent.
+
+## Frontend Stack
+- **View Layer**: Laravel Blade (server-rendered) + Vue 5 (complex components) + Alpine.js (interactivity)
+- **Styling**: Tailwind CSS 3.4
+- **UI Libraries**: Chart.js, FullCalendar, DataTables, Leaflet, Select2
+- **Build**: Vite 5 with `npm run dev` / `npm run build`
+
+## Database & Migrations
+- Use `php artisan make:model` with `-mfs` for full scaffolding
+- Preserve foreign key constraints and cascading rules
+- Use appropriate data types (unsignedBigInteger for IDs, decimal(18,2) for currency)
+- Run `php artisan migrate` to apply; `php artisan migrate:rollback` to revert
+- Seed with `php artisan db:seed` or `php artisan db:seed --class=GstRateSeeder`
+
+## Testing
+- **Unit tests** in `tests/Unit/` for services, helpers, models
+- **Feature tests** in `tests/Feature/` for API endpoints, workflows
+- Run with `composer test` (phpunit --testdox) or `composer test-parallel` (4 processes)
+- Use Pest for modern fluent syntax or PHPUnit for compatibility
+- Mock external APIs and services
+
+## Property Storage
+- Documents: `storage/app/documents/`
+- Reports: `storage/app/reports/`
+- Link with `php artisan storage:link`
+
+## Compliance & Real-Estate
+- **GST**: Validate GSTIN, map items to HSN/SAC, calculate IGST/CGST/SGST
+- **RERA**: Track milestones, quarterly updates, complaint resolution
+- **Stamp Duty**: Calculate based on property value and state rules
+- **PF/ESIC/TDS**: Auto-calculate based on salary slabs
+- **Multi-Tenant**: Separate data per white-label vertical
+
+For questions, consult `.github/agents/module.agent.md` or `README.md` for domain-specific guidance.

@@ -1,0 +1,68 @@
+# Windsurf Rules
+
+This repository is a Laravel 10 / PHP 8.4 enterprise real-estate platform with multi-tenant modular architecture. Keep changes focused and preserve proprietary semantics.
+
+## Key References
+- `AGENTS.md` — repository-specific agent guidance and conventions
+- `README.md` — setup, environment configuration, module description
+- `.github/agents/` — specialized agents for code review, deployment, frontend, testing, database, modules, environment
+
+## Essential Commands
+```bash
+composer install --no-interaction --prefer-dist --optimize-autoloader
+npm install && npm run build
+composer test
+composer run-script analyse
+php artisan migrate --seed
+```
+
+## Architecture
+- `app/Console/` — 141 scheduled Artisan commands
+- `app/Http/Controllers/` — 306 module controllers
+- `app/Models/` — Eloquent models per domain
+- `app/Services/` — Domain service classes (prefer over controller logic)
+- `app/Jobs/`, `app/Events/`, `app/Listeners/` — async and event-driven behavior
+- `routes/api.php` — 1,700+ REST endpoints
+- `resources/views/` — Blade templates organized by domain (CRM, HRMS, leads, properties, etc.)
+- `resources/js/` — Vue 5 and Alpine.js components
+
+## Development Guidelines
+- Prefer service classes in `app/Services/` for business logic
+- Keep REST API changes aligned with `routes/api.php`
+- Preserve `.env.example` and never hardcode configuration
+- Use `storage/app/documents/` and `storage/app/reports/` for generated files
+- Validate behavior with tests before committing
+- Avoid introducing new package dependencies unless explicitly requested
+
+## Do Not Modify
+- `.github/workflows/deploy.yml` — deployment controls, unless explicitly asked
+- `.env.example` — preserve configuration structure
+- Proprietary integrations (Razorpay, WhatsApp, MahaRERA, GST APIs)
+
+## Frontend Stack
+- Blade templates for server-rendered views
+- Vue 5 for complex components
+- Alpine.js for lightweight interactivity
+- Tailwind CSS 3.4 for styling
+- Chart.js, FullCalendar, DataTables, Leaflet, Select2 for specialized UIs
+- Build: `npm run dev` (hot reload), `npm run build` (production)
+
+## Indian Compliance & Real-Estate Domain
+- GST/GSTR-1/3B, IRN e-Invoice generation
+- RERA/MahaRERA project registration and compliance
+- Stamp duty calculations
+- PF/ESIC/TDS payroll compliance
+- Aadhaar eSign, CIBIL integration
+- Multi-tenant isolation for white-label verticals (Clinic, School, Hotel, Retail)
+
+## Specialized Agents Available
+Use `/agents` references or mention specific domains:
+- **code-review** — Laravel/PHP best practices and security
+- **deployment** — GitHub Actions and CI/CD workflows
+- **frontend** — Blade/Vue/Tailwind UI development
+- **testing** — PHPUnit/Pest unit and feature tests
+- **database** — Migrations, models, seeders, schema design
+- **module** — Domain-specific feature development (CRM, HRMS, Finance, etc.)
+- **environment** — Local dev setup and initialization
+
+For help, reference `.github/agents/` or run `/help agents`.

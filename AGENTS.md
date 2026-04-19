@@ -51,6 +51,10 @@ This file helps AI coding agents understand the PFRE-Omni repository, avoid unne
 - `.github/agents/code-review.agent.md` for the repository's Laravel/PHP code review agent.
 - `.github/agents/deployment.agent.md` for workflow and CI/CD review guidance.
 - `.github/agents/frontend.agent.md` for Vue/Blade/Tailwind UI development.
+- `.github/agents/testing.agent.md` for unit and feature test guidance with PHPUnit/Pest.
+- `.github/agents/database.agent.md` for migrations, seeding, and schema design.
+- `.github/agents/module.agent.md` for domain-specific feature development (CRM, HRMS, finance, etc.).
+- `.github/agents/environment.agent.md` for local environment setup and initialization.
 
 ## Important guidance
 - The codebase is proprietary: keep changes contained to this repository and do not introduce external code or public service assumptions unless explicitly asked.
