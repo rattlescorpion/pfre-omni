@@ -1,33 +1,39 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB; // This tells Laravel we want to talk to the database!
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
-final class DashboardController extends Controller
+class DashboardController extends Controller
 {
     public function index(Request $request)
     {
-        // Fetch real data directly from the pfre_omni database!
+        $greeting = match (true) {
+            Carbon::now()->hour < 12 => 'Morning',
+            Carbon::now()->hour < 17 => 'Afternoon',
+            default                  => 'Evening',
+        };
+
         $kpis = [
-            // Count all leads that are not marked as closed
-            'active_leads' => DB::table('leads')
-                ->whereNotIn('stage', ['closed_won', 'closed_lost'])
-                ->count(),
-            
-            // Count all currently active leases
-            'pending_rent' => DB::table('leases')
-                ->where('status', 'active')
-                ->count(),
-            
-            // Count all support tickets that are currently open
-            'open_tickets' => DB::table('tickets')
-                ->where('status', 'open')
-                ->count()
+            'active_leads'    => Schema::hasTable('leads') 
+                ? DB::table('leads')->whereNotIn('stage', ['closed_won', 'closed_lost'])->count() 
+                : 0,
+            'pending_rent'    => Schema::hasTable('leases') 
+                ? DB::table('leases')->where('status', 'active')->count() 
+                : 0,
+            'open_tickets'    => Schema::hasTable('tickets') 
+                ? DB::table('tickets')->where('status', 'open')->count() 
+                : 0,
+            'monthly_revenue' => 0,
         ];
 
-        // Send the real data to the visual dashboard
-        return view('dashboard', compact('kpis'));
+        $recentLeads = Schema::hasTable('leads')
+            ? DB::table('leads')->latest()->take(5)->get()
+            : collect();
+
+        return view('dashboard', compact('greeting', 'kpis', 'recentLeads'));
     }
 }

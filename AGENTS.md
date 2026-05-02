@@ -68,12 +68,32 @@ This file helps AI coding agents understand the PFRE-Omni repository, avoid unne
 - Integrate with existing UI libraries: Chart.js, FullCalendar, DataTables, Leaflet, Select2.
 - Build with `npm run dev` (hot reload) or `npm run build` (production).
 
+## Development Prompts & Guides
+
+A comprehensive suite of development prompts is available to guide implementation across all areas:
+
+### Frontend & UI/UX
+- **[.prompt.md](.prompt.md)** — Main frontend development guide (Blade, Alpine.js, Vue 5, Tailwind)
+- **[.prompt-api-integration.md](.prompt-api-integration.md)** — Backend API integration patterns (Axios, forms, error handling)
+- **[.prompt-theme-customization.md](.prompt-theme-customization.md)** — Color themes, design tokens, white-label variants
+- **[.prompt-component-library.md](.prompt-component-library.md)** — Reusable Blade components catalog
+- **[.prompt-performance-audit.md](.prompt-performance-audit.md)** — Build optimization, Lighthouse metrics, bundle analysis
+- **[.prompt-accessibility.md](.prompt-accessibility.md)** — WCAG 2.1 AA compliance, keyboard navigation, screen readers
+- **[FRONTEND_PROMPTS_GUIDE.md](FRONTEND_PROMPTS_GUIDE.md)** — Quick reference map for all frontend tasks
+
+### Backend & API
+- **[.prompt-backend-api.md](.prompt-backend-api.md)** — RESTful API design (routes, resources, validation, pagination)
+
+### Testing & QA
+- **[.prompt-testing-qa.md](.prompt-testing-qa.md)** — PHPUnit & Pest testing (unit tests, feature tests, coverage)
+
 ## Link references
 - `README.md` for full installation, environment configuration, and module description.
 - `composer.json` for package and script conventions.
 - `package.json` for frontend tooling.
+- Prompt guides for specific development tasks (see Development Prompts section above).
 
 ---
 
 ## Recommended next customization
-Consider adding a dedicated skill or hook for repository-specific tasks such as environment initialization, module-specific change guidelines, or testing patterns for Laravel/PHP.
+Domain-specific prompts for CRM, HRMS, Finance, and Properties modules could be created to provide targeted feature development guidance for each business domain.

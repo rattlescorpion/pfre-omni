@@ -9,7 +9,7 @@
     <div class="mb-8 flex flex-col sm:flex-row justify-between sm:items-end gap-4">
         <div>
             <h1 class="text-4xl font-extrabold text-slate-800 dark:text-white">
-                Good {{ $greeting }}, {{ auth()->user()->name }}!
+                Good {{ $greeting }}, {{ auth()->check() ? auth()->user()->name : 'User' }}!
             </h1>
             <p class="text-lg text-slate-500 dark:text-slate-400 mt-2">
                 Welcome to the Omni Platform Dashboard!
