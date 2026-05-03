@@ -1,9 +1,6 @@
 # ===========================================================================
 # Property Finder Omni Platform — Docker Compose (Local Development)
 # ===========================================================================
-# Services: PHP 8.4-FPM, Nginx, MySQL 8.0, Redis 7, Mailpit, Node (Vite)
-# Usage: docker compose up -d
-# ===========================================================================
 
 networks:
   pfre_network:
@@ -38,7 +35,7 @@ services:
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
-      PHP_OPCACHE_ENABLE: "0"       # Disable opcache in dev for live reloads
+      PHP_OPCACHE_ENABLE: "0"
     networks:
       - pfre_network
     depends_on:
@@ -47,7 +44,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "php -r 'echo \"ok\";'"]
+      test: ["CMD", "php", "-v"]         # Simple PHP version check (always passes)
       interval: 30s
       timeout: 10s
       retries: 3
@@ -71,7 +68,7 @@ services:
     depends_on:
       - app
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
+      test: ["CMD-SHELL", "nginx -t || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -88,8 +85,6 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
       MYSQL_DATABASE: ${DB_DATABASE:-pfre_omni}
-      #MYSQL_USER: ${DB_USERNAME:-pfre}
-      #MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
       MYSQL_CHARSET: utf8mb4
       MYSQL_COLLATION: utf8mb4_unicode_ci
     volumes:
@@ -109,7 +104,7 @@ services:
       --slow-query-log-file=/var/lib/mysql/slow.log
       --long-query-time=2
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root", "-p${DB_ROOT_PASSWORD:-secret}"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p${MYSQL_ROOT_PASSWORD} --silent"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -131,7 +126,7 @@ services:
       - pfre_network
     command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -158,7 +153,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "php", "artisan", "horizon:status"]
+      test: ["CMD-SHELL", "php artisan horizon:status || exit 1"]
       interval: 60s
       timeout: 10s
       retries: 3
@@ -176,7 +171,6 @@ services:
     volumes:
       - .:/var/www/html
       - .docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini:ro
-    # Runs `artisan schedule:run` every minute (simulates crontab)
     command: >
       sh -c "while true; do
         php artisan schedule:run --verbose --no-interaction;
@@ -216,8 +210,8 @@ services:
     container_name: pfre_mailpit
     restart: unless-stopped
     ports:
-      - "${MAILPIT_SMTP_PORT:-1025}:1025"   # SMTP
-      - "${MAILPIT_UI_PORT:-8025}:8025"     # Web UI
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+      - "${MAILPIT_UI_PORT:-8025}:8025"
     environment:
       MP_MAX_MESSAGES: 500
       MP_DATA_FILE: /data/mailpit.db
@@ -230,16 +224,15 @@ services:
   # phpMyAdmin (Database GUI — dev only)
   # ---------------------------------------------------------------------------
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin/phpmyadmin
     container_name: pfre_phpmyadmin
     restart: unless-stopped
     ports:
-      - "${PMA_PORT:-8080}:80"
+      - 8080:80
     environment:
       PMA_HOST: mysql
-      PMA_PORT: 3306
-      PMA_USER: root
-      PMA_PASSWORD: ${DB_ROOT_PASSWORD:-secret}
+      PMA_USER: '${DB_USERNAME}'
+      PMA_PASSWORD: '${DB_PASSWORD}'
       UPLOAD_LIMIT: 128M
     networks:
       - pfre_network
