@@ -30,7 +30,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
 
-    // 3. CRM & LEAD MANAGEMENT
+    // 3. CONTACTS & COMPANIES 360° DIRECTORY
+    Route::prefix('directory')->name('directory.')->controller(DirectoryEntityController::class)->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{directoryEntity}', 'show')->whereNumber('directoryEntity')->name('show');
+    });
+
+    // 4. CRM & LEAD MANAGEMENT
     Route::prefix('crm')->name('crm.')->group(function () {
         Route::resource('leads', LeadController::class);
         Route::resource('tasks', TaskController::class);
@@ -40,7 +48,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('contacts/export', [LeadController::class, 'export'])->name('contacts.export');
     });
 
-    // 4. PROPERTY & PROJECT INVENTORY
+    // 5. PROPERTY & PROJECT INVENTORY
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
         Route::resource('projects', ProjectController::class);
@@ -50,7 +58,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('{id}/status', [InventoryController::class, 'updateStatus'])->name('status.update');
     });
 
-    // 5. FINANCE & TAXATION (Mumbai Specific)
+    // 6. FINANCE & TAXATION (Mumbai Specific)
     Route::prefix('finance')->name('finance.')->group(function () {
         Route::get('invoices', [FinanceController::class, 'index'])->name('invoices.index');
         Route::get('invoices/create', [FinanceController::class, 'create'])->name('invoices.create');
@@ -61,13 +69,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('reports', [FinanceController::class, 'reports'])->name('reports');
     });
 
-    // 6. HRMS (Human Resource Management)
+    // 7. HRMS (Human Resource Management)
     Route::prefix('hr')->name('hr.')->group(function () {
         Route::resource('employees', EmployeeController::class);
         // Additional attendance/payroll routes can be added here
     });
 
-    // 7. LEGAL & DOCUMENT GENERATOR
+    // 8. LEGAL & DOCUMENT GENERATOR
     Route::prefix('documents')->name('documents.')->group(function () {
         Route::get('templates', [DocumentController::class, 'index'])->name('templates.index');
         Route::post('generate/{type}', [DocumentController::class, 'generate'])->name('generate');
