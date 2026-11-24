@@ -50,6 +50,11 @@ class DirectoryEntity extends Model
         return $this->hasMany(DirectoryAddress::class, 'entity_id');
     }
 
+    public function identityDocuments(): HasMany
+    {
+        return $this->hasMany(DirectoryIdentityDocument::class, 'directory_entity_id');
+    }
+
     public function propertyOwnerships(): HasMany
     {
         return $this->hasMany(PropertyOwnership::class, 'directory_entity_id')->latest('valid_from');
