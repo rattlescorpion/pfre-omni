@@ -22,7 +22,7 @@ use App\Http\Controllers\Directory\DirectoryEntityController;
 */
 
 // 1. PUBLIC LANDING (redirects to dashboard as per first snippet)
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::view('/', 'welcome')->name('home');
 
 // Authentication Required Group (as per second snippet)
 Route::middleware(['auth', 'verified'])->group(function () {
