@@ -54,7 +54,62 @@
         </section>
     </div>
 
+    <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-80
+    @if($entity->entity_type === 'company')
     <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Company Branches</h2>
+        <form method="POST" action="{{ route('directory.branches.store', $entity) }}" class="mt-4 grid gap-3 md:grid-cols-2">
+            @csrf
+            <div><label for="branch_name" class="mb-1 block text-sm font-medium">Branch Name</label><input id="branch_name" name="branch_name" required maxlength="190" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label for="branch_type" class="mb-1 block text-sm font-medium">Branch Type</label><select id="branch_type" name="branch_type" required class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"><option value="head_office">Head Office</option><option value="registered_office">Registered Office</option><option value="office">Office</option><option value="warehouse">Warehouse</option><option value="site">Site</option><option value="other">Other</option></select></div>
+            <div><label for="branch_code" class="mb-1 block text-sm font-medium">Branch Code (Optional)</label><input id="branch_code" name="branch_code" maxlength="80" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label for="branch_phone" class="mb-1 block text-sm font-medium">Phone (Optional)</label><input id="branch_phone" name="phone" maxlength="32" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label for="branch_email" class="mb-1 block text-sm font-medium">Email (Optional)</label><input id="branch_email" name="email" type="email" maxlength="254" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div class="md:col-span-2"><label for="branch_notes" class="mb-1 block text-sm font-medium">Notes (Optional)</label><textarea id="branch_notes" name="notes" rows="2" maxlength="2000" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></textarea></div>
+            <div class="md:col-span-2"><button class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Add Branch</button></div>
+        </form>
+        <div class="mt-5 space-y-3">
+            @forelse($branches as $branch)
+                <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                    <div><p class="font-semibold text-gray-900 dark:text-white">{{ $branch->branch_name }}</p><p class="text-xs text-gray-500">{{ ucfirst(str_replace('_', ' ', $branch->branch_type)) }} · {{ $branch->branch_code ?: 'No branch code' }} · {{ ucfirst($branch->status) }}</p></div>
+                    <form method="POST" action="{{ route('directory.branches.destroy', [$entity, $branch]) }}" onsubmit="return confirm('Archive this branch?')">@csrf @method('DELETE')<button class="text-sm font-semibold text-red-600 hover:underline">Archive</button></form>
+                </div>
+            @empty
+                <p class="text-sm text-gray-500">No branches added yet.</p>
+            @endforelse
+        </div>
+    </section>
+    @endif
+
+    <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Addresses</h2>
+        <form method="POST" action="{{ route('directory.addresses.store', $entity) }}" class="mt-4 grid gap-3 md:grid-cols-2">
+            @csrf
+            @foreach(['address_type'=>'Address Type','building_name'=>'Building Name','society_name'=>'Society Name','flat_unit_number'=>'Flat / Unit Number','wing'=>'Wing','line_1'=>'Address Line 1','line_2'=>'Address Line 2','road'=>'Road','landmark'=>'Landmark','area'=>'Area / Locality','village'=>'Village','taluka_sub_district'=>'Taluka / Sub-District','sub_division'=>'Sub-Division','district'=>'District','division'=>'Division','state'=>'State','postal_code'=>'PIN / Postal Code','police_station'=>'Police Station','post_office'=>'Post Office','survey_number'=>'Survey Number','hissa_number'=>'Hissa Number','cts_number'=>'CTS Number','railway_station'=>'Railway Station','metro_station'=>'Metro Station','bus_stop'=>'Bus Stop','fire_station'=>'Fire Station']]
+                <div><label for="{{ $field }}" class="mb-1 block text-sm font-medium">{{ $label }}</label>
+                @if($field === 'address_type')
+                    <select id="{{ $field }}" name="{{ $field }}" required class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"><option value="primary">Primary</option><option value="registered">Registered</option><option value="office">Office</option><option value="residential">Residential</option><option value="billing">Billing</option><option value="correspondence">Correspondence</option><option value="other">Other</option></select>
+                @else
+                    <input id="{{ $field }}" name="{{ $field }}" maxlength="190" @if($field === 'postal_code') inputmode="numeric" maxlength="12" @endif class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white">
+                @endif</div>
+            @endforeach
+            <div><label for="country" class="mb-1 block text-sm font-medium">Country Code (ISO-2)</label><input id="country" name="country" value="IN" required minlength="2" maxlength="2" class="w-full rounded-lg border-gray-300 text-sm uppercase dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div class="md:col-span-2"><label for="address_notes" class="mb-1 block text-sm font-medium">Address Notes</label><textarea id="address_notes" name="notes" rows="2" maxlength="2000" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></textarea></div>
+            <div class="md:col-span-2"><button class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Add Address</button></div>
+        </form>
+        <div class="mt-5 space-y-3">
+            @forelse($addresses as $address)
+                <div class="flex flex-wrap items-start justify-between gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                    <div><p class="font-semibold text-gray-900 dark:text-white">{{ collect([$address->flat_unit_number, $address->wing, $address->building_name, $address->society_name])->filter()->implode(', ') ?: 'Address' }}</p><p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ collect([$address->line_1, $address->line_2, $address->road, $address->landmark, $address->area, $address->village, $address->district, $address->state, $address->postal_code, $address->country])->filter()->implode(', ') }}</p><p class="mt-1 text-xs text-gray-500">{{ ucfirst($address->address_type) }} · {{ collect([$address->survey_number ? 'Survey '.$address->survey_number : null, $address->hissa_number ? 'Hissa '.$address->hissa_number : null, $address->cts_number ? 'CTS '.$address->cts_number : null])->filter()->implode(' · ') }}</p></div>
+                    <form method="POST" action="{{ route('directory.addresses.destroy', [$entity, $address]) }}" onsubmit="return confirm('Archive this address?')">@csrf @method('DELETE')<button class="text-sm font-semibold text-red-600 hover:underline">Archive</button></form>
+                </div>
+            @empty
+                <p class="text-sm text-gray-500">No addresses added yet.</p>
+            @endforelse
+        </div>
+    </section>
+
+0">
         <div class="flex flex-wrap items-center justify-between gap-3">
             <div>
                 <h2 class="text-lg font-bold text-gray-900 dark:text-white">Relationships</h2>
