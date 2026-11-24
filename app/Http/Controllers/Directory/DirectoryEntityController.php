@@ -10,6 +10,9 @@ use App\Models\DirectoryCommunicationPoint;
 use App\Models\DirectoryEntityRelationship;
 use App\Models\DirectoryCompanyBranch;
 use App\Models\DirectoryAddress;
+use App\Models\Property;
+use App\Models\PropertyOwnership;
+use App\Services\Directory\PropertyOwnershipService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -92,7 +95,14 @@ class DirectoryEntityController extends Controller
     {
         abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
 
-        $directoryEntity->load(['communicationPoints', 'addresses', 'branches.addresses']);
+        $directoryEntity->load(['communicationPoints', 'addresses', 'branches.addresses', 'propertyOwnerships.property']);
+        $availableProperties = Property::query()
+            ->where(function ($query) use ($request) {
+                $query->where('created_by', $request->user()->id)
+                    ->orWhere('assigned_to', $request->user()->id);
+            })
+            ->orderBy('id', 'desc')
+            ->get(['id', 'project_id', 'unit_number', 'type', 'status']);
         $relationships = DirectoryEntityRelationship::query()
             ->with(['source:id,display_name,entity_type', 'target:id,display_name,entity_type'])
             ->where(function ($query) use ($directoryEntity) {
@@ -112,6 +122,8 @@ class DirectoryEntityController extends Controller
         return view('directory.show', [
             'entity' => $directoryEntity,
             'addresses' => $directoryEntity->addresses,
+            'propertyOwnerships' => $directoryEntity->propertyOwnerships,
+            'availableProperties' => $availableProperties,
             'branches' => $directoryEntity->branches,
             'relationships' => $relationships,
             'availableEntities' => $availableEntities,
@@ -128,6 +140,49 @@ class DirectoryEntityController extends Controller
                 'other' => 'Other',
             ],
         ]);
+    }
+
+    public function storePropertyOwnership(
+        Request $request,
+        DirectoryEntity $directoryEntity,
+        PropertyOwnershipService $service
+    ): RedirectResponse {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+
+        $data = $request->validate([
+            'property_id' => ['required', 'integer', 'exists:properties,id'],
+            'ownership_percentage' => ['nullable', 'numeric', 'gt:0', 'lte:100'],
+            'ownership_type' => ['required', 'string', 'max:40'],
+            'valid_from' => ['nullable', 'date'],
+            'valid_until' => ['nullable', 'date', 'after_or_equal:valid_from'],
+            'document_reference' => ['nullable', 'string', 'max:190'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $service->attach(
+            (int) $request->user()->id,
+            (int) $data['property_id'],
+            (int) $directoryEntity->id,
+            $data
+        );
+
+        return redirect()->route('directory.show', $directoryEntity)
+            ->with('success', 'Property ownership link added.');
+    }
+
+    public function destroyPropertyOwnership(
+        Request $request,
+        DirectoryEntity $directoryEntity,
+        PropertyOwnership $ownership,
+        PropertyOwnershipService $service
+    ): RedirectResponse {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless((int) $ownership->directory_entity_id === (int) $directoryEntity->id, 404);
+
+        $service->archive((int) $request->user()->id, $ownership);
+
+        return redirect()->route('directory.show', $directoryEntity)
+            ->with('success', 'Property ownership link archived.');
     }
 
     public function storeRelationship(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
