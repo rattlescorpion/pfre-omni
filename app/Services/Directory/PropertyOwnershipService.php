@@ -23,10 +23,10 @@ class PropertyOwnershipService
             $property = Property::query()->lockForUpdate()->findOrFail($propertyId);
             $entity = DirectoryEntity::query()->lockForUpdate()->findOrFail($entityId);
 
-            if (!in_array($userId, array_filter([
+            if (!in_array($userId, array_map('intval', array_filter([
                 $property->created_by,
                 $property->assigned_to,
-            ], fn ($value) => $value !== null), true)) {
+            ], fn ($value) => $value !== null)), true)) {
                 abort(404);
             }
 
@@ -68,10 +68,10 @@ class PropertyOwnershipService
         $property = Property::query()->findOrFail($ownership->property_id);
         $entity = DirectoryEntity::query()->findOrFail($ownership->directory_entity_id);
 
-        if (!in_array($userId, array_filter([
+        if (!in_array($userId, array_map('intval', array_filter([
             $property->created_by,
             $property->assigned_to,
-        ], fn ($value) => $value !== null), true) || (int) $entity->owner_user_id !== $userId) {
+        ], fn ($value) => $value !== null)), true) || (int) $entity->owner_user_id !== $userId) {
             abort(404);
         }
 
