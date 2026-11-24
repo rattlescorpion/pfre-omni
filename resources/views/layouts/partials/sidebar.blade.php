@@ -22,6 +22,10 @@
             Dashboard
         </x-sidebar-link>
 
+        <x-sidebar-link href="{{ route('directory.index') }}" icon="users" :active="request()->routeIs('directory.*')">
+            Contacts & Companies 360°
+        </x-sidebar-link>
+
         {{-- CRM & Lead Management --}}
         <x-sidebar-dropdown title="CRM & Leads" icon="users">
             <x-sidebar-link href="{{ route('leads.index') }}" :active="request()->routeIs('leads.*')">Leads</x-sidebar-link>
