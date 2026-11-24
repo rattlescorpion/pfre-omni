@@ -50,6 +50,11 @@ class DirectoryEntity extends Model
         return $this->hasMany(DirectoryAddress::class, 'entity_id');
     }
 
+    public function propertyOwnerships(): HasMany
+    {
+        return $this->hasMany(PropertyOwnership::class, 'directory_entity_id')->latest('valid_from');
+    }
+
     public function scopeOwnedBy($query, int $userId)
     {
         return $query->where('owner_user_id', $userId);
