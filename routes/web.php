@@ -37,6 +37,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/create', 'create')->name('create');
         Route::post('/', 'store')->name('store');
         Route::get('/{directoryEntity}', 'show')->whereNumber('directoryEntity')->name('show');
+        Route::post('/{directoryEntity}/relationships', 'storeRelationship')->whereNumber('directoryEntity')->name('relationships.store');
+        Route::delete('/{directoryEntity}/relationships/{relationship}', 'destroyRelationship')->whereNumber('directoryEntity')->whereNumber('relationship')->name('relationships.destroy');
     });
 
     // 4. CRM & LEAD MANAGEMENT
