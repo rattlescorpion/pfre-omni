@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class DirectoryEntity extends Model
 {
@@ -39,7 +40,17 @@ class DirectoryEntity extends Model
          ->withTimestamps();
     }
 
-    public function branches(): HasMany\n    {\n        return $this->hasMany(DirectoryCompanyBranch::class, 'company_entity_id');\n    }\n\n    public function addresses(): HasMany\n    {\n        return $this->hasMany(DirectoryAddress::class, 'entity_id');\n    }\n\n    public function scopeOwnedBy($query, int $userId)
+    public function branches(): HasMany
+    {
+        return $this->hasMany(DirectoryCompanyBranch::class, 'company_entity_id');
+    }
+
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(DirectoryAddress::class, 'entity_id');
+    }
+
+    public function scopeOwnedBy($query, int $userId)
     {
         return $query->where('owner_user_id', $userId);
     }
