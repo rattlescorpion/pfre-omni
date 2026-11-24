@@ -20,7 +20,7 @@ class DirectoryEntityController extends Controller
         $entities = DirectoryEntity::ownedBy((int) $request->user()->id)
             ->with('communicationPoints')
             ->when($request->filled('type'), fn ($q) => $q->where('entity_type', $request->string('type')))
-            ->when($request->filled('q'), fn ($q) => $q->where('display_name', 'ilike', '%' . $request->string('q') . '%'))
+            ->when($request->filled('q'), fn ($q) => $q->whereRaw('LOWER(display_name) LIKE ?', ['%' . mb_strtolower((string) $request->string('q')) . '%']))
             ->latest()
             ->paginate(20)
             ->withQueryString();
