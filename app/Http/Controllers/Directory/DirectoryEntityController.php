@@ -90,7 +90,7 @@ class DirectoryEntityController extends Controller
     {
         abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
 
-        $directoryEntity->load('communicationPoints');
+        $directoryEntity->load(['communicationPoints', 'addresses', 'branches.addresses']);
         $relationships = DirectoryEntityRelationship::query()
             ->with(['source:id,display_name,entity_type', 'target:id,display_name,entity_type'])
             ->where(function ($query) use ($directoryEntity) {
@@ -108,7 +108,7 @@ class DirectoryEntityController extends Controller
             ->get(['id', 'display_name', 'entity_type']);
 
         return view('directory.show', [
-            'entity' => $directoryEntity,
+            'entity' => $directoryEntity,\n            'addresses' => $directoryEntity->addresses,\n            'branches' => $directoryEntity->branches,
             'relationships' => $relationships,
             'availableEntities' => $availableEntities,
             'relationshipTypes' => [
