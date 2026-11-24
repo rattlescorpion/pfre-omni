@@ -82,6 +82,49 @@
     @endif
 
     <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Property Ownership</h2>
+        <p class="mt-1 text-sm text-gray-500">Link this person or company to properties in your inventory and record their ownership share.</p>
+        @if($availableProperties->isNotEmpty())
+            <form method="POST" action="{{ route('directory.property-ownerships.store', $entity) }}" class="mt-4 grid gap-3 md:grid-cols-2">
+                @csrf
+                <div class="md:col-span-2">
+                    <label for="ownership_property_id" class="mb-1 block text-sm font-medium">Property</label>
+                    <select id="ownership_property_id" name="property_id" required class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white">
+                        <option value="">Select a property</option>
+                        @foreach($availableProperties as $property)
+                            <option value="{{ $property->id }}" @selected(old('property_id') == $property->id)>#{{ $property->id }} · {{ $property->unit_number }} · {{ $property->type }} · {{ $property->status }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div><label for="ownership_percentage" class="mb-1 block text-sm font-medium">Ownership Percentage</label><input id="ownership_percentage" name="ownership_percentage" type="number" min="0.01" max="100" step="0.01" value="{{ old('ownership_percentage') }}" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+                <div><label for="ownership_type" class="mb-1 block text-sm font-medium">Ownership Type</label><select id="ownership_type" name="ownership_type" required class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"><option value="owner">Owner</option><option value="co_owner">Co-owner</option><option value="joint_owner">Joint Owner</option><option value="beneficial_owner">Beneficial Owner</option><option value="power_of_attorney">Power of Attorney</option><option value="other">Other</option></select></div>
+                <div><label for="ownership_valid_from" class="mb-1 block text-sm font-medium">Valid From</label><input id="ownership_valid_from" name="valid_from" type="date" value="{{ old('valid_from') }}" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+                <div><label for="ownership_valid_until" class="mb-1 block text-sm font-medium">Valid Until</label><input id="ownership_valid_until" name="valid_until" type="date" value="{{ old('valid_until') }}" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+                <div class="md:col-span-2"><label for="ownership_document_reference" class="mb-1 block text-sm font-medium">Document Reference</label><input id="ownership_document_reference" name="document_reference" maxlength="190" value="{{ old('document_reference') }}" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+                <div class="md:col-span-2"><label for="ownership_notes" class="mb-1 block text-sm font-medium">Notes</label><textarea id="ownership_notes" name="notes" rows="2" maxlength="2000" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white">{{ old('notes') }}</textarea></div>
+                <div class="md:col-span-2"><button class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Link Property</button></div>
+            </form>
+        @else
+            <p class="mt-4 rounded-lg bg-gray-50 p-3 text-sm text-gray-600 dark:bg-gray-900 dark:text-gray-300">No properties are currently assigned to your account. Add or assign a property before linking ownership.</p>
+        @endif
+
+        <div class="mt-5 space-y-3">
+            @forelse($propertyOwnerships as $ownership)
+                <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                    <div>
+                        <p class="font-semibold text-gray-900 dark:text-white">{{ $ownership->property?->unit_number ?: 'Property #'.$ownership->property_id }}</p>
+                        <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $ownership->property?->type ?: 'Property' }} · {{ $ownership->ownership_type }} · {{ $ownership->ownership_percentage !== null ? $ownership->ownership_percentage.'%' : 'Share not specified' }}</p>
+                        <p class="mt-1 text-xs text-gray-500">{{ $ownership->valid_from?->format('d M Y') ?: 'Start date not specified' }} — {{ $ownership->valid_until?->format('d M Y') ?: 'Ongoing' }} · {{ $ownership->document_reference ?: 'No document reference' }}</p>
+                    </div>
+                    <form method="POST" action="{{ route('directory.property-ownerships.destroy', [$entity, $ownership]) }}" onsubmit="return confirm('Archive this property ownership link?')">@csrf @method('DELETE')<button class="text-sm font-semibold text-red-600 hover:underline">Archive</button></form>
+                </div>
+            @empty
+                <p class="text-sm text-gray-500">No property ownership links recorded.</p>
+            @endforelse
+        </div>
+    </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
         <h2 class="text-lg font-bold text-gray-900 dark:text-white">Addresses</h2>
         <form method="POST" action="{{ route('directory.addresses.store', $entity) }}" class="mt-4 grid gap-3 md:grid-cols-2">
             @csrf
