@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Directory;
 use App\Http\Controllers\Controller;
 use App\Models\DirectoryEntity;
 use App\Models\DirectoryCommunicationPoint;
+use App\Models\DirectoryEntityRelationship;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -88,8 +89,92 @@ class DirectoryEntityController extends Controller
     public function show(Request $request, DirectoryEntity $directoryEntity): View
     {
         abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
-        $directoryEntity->load('communicationPoints');
 
-        return view('directory.show', ['entity' => $directoryEntity]);
+        $directoryEntity->load('communicationPoints');
+        $relationships = DirectoryEntityRelationship::query()
+            ->with(['source:id,display_name,entity_type', 'target:id,display_name,entity_type'])
+            ->where(function ($query) use ($directoryEntity) {
+                $query->where('source_entity_id', $directoryEntity->id)
+                    ->orWhere('target_entity_id', $directoryEntity->id);
+            })
+            ->whereHas('source', fn ($query) => $query->where('owner_user_id', auth()->id()))
+            ->whereHas('target', fn ($query) => $query->where('owner_user_id', auth()->id()))
+            ->latest()
+            ->get();
+
+        $availableEntities = DirectoryEntity::ownedBy((int) $request->user()->id)
+            ->whereKeyNot($directoryEntity->id)
+            ->orderBy('display_name')
+            ->get(['id', 'display_name', 'entity_type']);
+
+        return view('directory.show', [
+            'entity' => $directoryEntity,
+            'relationships' => $relationships,
+            'availableEntities' => $availableEntities,
+            'relationshipTypes' => [
+                'owner' => 'Owner',
+                'director' => 'Director',
+                'founder' => 'Founder',
+                'employee' => 'Employee',
+                'authorised_signatory' => 'Authorised Signatory',
+                'partner' => 'Partner',
+                'shareholder' => 'Shareholder',
+                'family_member' => 'Family Member',
+                'representative' => 'Representative',
+                'other' => 'Other',
+            ],
+        ]);
+    }
+
+    public function storeRelationship(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+
+        $data = $request->validate([
+            'target_entity_id' => [
+                'required', 'integer',
+                Rule::exists('directory_entities', 'id')->where('owner_user_id', $request->user()->id),
+                Rule::notIn([$directoryEntity->id]),
+            ],
+            'relationship_type' => ['required', Rule::in([
+                'owner', 'director', 'founder', 'employee', 'authorised_signatory',
+                'partner', 'shareholder', 'family_member', 'representative', 'other',
+            ])],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'valid_from' => ['nullable', 'date'],
+            'valid_until' => ['nullable', 'date', 'after_or_equal:valid_from'],
+        ]);
+
+        DirectoryEntityRelationship::create([
+            ...$data,
+            'source_entity_id' => $directoryEntity->id,
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('directory.show', $directoryEntity)
+            ->with('success', 'Relationship added successfully.');
+    }
+
+    public function destroyRelationship(
+        Request $request,
+        DirectoryEntity $directoryEntity,
+        DirectoryEntityRelationship $relationship
+    ): RedirectResponse {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless(
+            $relationship->source_entity_id === $directoryEntity->id
+            || $relationship->target_entity_id === $directoryEntity->id,
+            404
+        );
+        abort_unless(
+            $relationship->source()->where('owner_user_id', $request->user()->id)->exists()
+            && $relationship->target()->where('owner_user_id', $request->user()->id)->exists(),
+            404
+        );
+
+        $relationship->delete();
+
+        return redirect()->route('directory.show', $directoryEntity)
+            ->with('success', 'Relationship archived.');
     }
 }
