@@ -38,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/', 'store')->name('store');
         Route::get('/{directoryEntity}', 'show')->whereNumber('directoryEntity')->name('show');
         Route::post('/{directoryEntity}/relationships', 'storeRelationship')->whereNumber('directoryEntity')->name('relationships.store');
-        Route::delete('/{directoryEntity}/relationships/{relationship}', 'destroyRelationship')->whereNumber('directoryEntity')->whereNumber('relationship')->name('relationships.destroy');
+        Route::delete('/{directoryEntity}/relationships/{relationship}', 'destroyRelationship')->whereNumber('directoryEntity')->whereNumber('relationship')->name('relationships.destroy');\n        Route::post('/{directoryEntity}/branches', 'storeBranch')->whereNumber('directoryEntity')->name('branches.store');\n        Route::delete('/{directoryEntity}/branches/{branch}', 'destroyBranch')->whereNumber('directoryEntity')->whereNumber('branch')->name('branches.destroy');\n        Route::post('/{directoryEntity}/addresses', 'storeAddress')->whereNumber('directoryEntity')->name('addresses.store');\n        Route::delete('/{directoryEntity}/addresses/{address}', 'destroyAddress')->whereNumber('directoryEntity')->whereNumber('address')->name('addresses.destroy');
     });
 
     // 4. CRM & LEAD MANAGEMENT
