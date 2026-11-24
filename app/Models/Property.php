@@ -94,6 +94,11 @@ class Property extends Model
         return $this->hasMany(PropertyTax::class);
     }
 
+    public function ownerships(): HasMany
+    {
+        return $this->hasMany(PropertyOwnership::class)->latest('valid_from');
+    }
+
     // ── Scopes ─────────────────────────────────────────────
     public function scopeAvailable($query)
     {
