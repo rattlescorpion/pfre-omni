@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-# Global environment variables
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -33,7 +32,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
-          extensions: mbstring, xml, ctype, iconv, mysqli, pdo_mysql, zip
+          extensions: mbstring, xml, ctype, iconv, mysqli, pdo_mysql, pdo_sqlite, sqlite3, zip
           coverage: xdebug
 
       - name: Cache Composer
@@ -45,16 +44,13 @@ jobs:
             ${{ runner.os }}-composer-
 
       - name: Install PHP dependencies (With Dev Tools)
-        run: |
-          composer install --prefer-dist --optimize-autoloader --no-interaction --no-progress
+        run: composer install --prefer-dist --optimize-autoloader --no-interaction --no-progress
 
       - name: Install JavaScript dependencies
-        run: |
-          npm ci
+        run: npm ci
 
       - name: Build assets
-        run: |
-          npm run build
+        run: npm run build
 
       - name: Prepare Environment for Testing
         run: |
@@ -68,5 +64,4 @@ jobs:
         run: |
           echo "Removing dev dependencies before deployment..."
           composer install --no-dev --optimize-autoloader --no-interaction --no-progress
-          
-          echo "Deploying application..."
+          echo "Deployment is not configured in this workflow."
