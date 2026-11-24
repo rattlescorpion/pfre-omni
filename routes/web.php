@@ -12,7 +12,7 @@ use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\Hrms\EmployeeController;
 use App\Http\Controllers\Crm\TaskController;
 use App\Http\Controllers\Crm\ERegistrationController;
-use App\Http\Controllers\Inventory\InventoryController;
+use App\Http\Controllers\Inventory\InventoryController;\nuse App\Http\Controllers\Directory\DirectoryEntityController;
 
 /*
 |--------------------------------------------------------------------------
