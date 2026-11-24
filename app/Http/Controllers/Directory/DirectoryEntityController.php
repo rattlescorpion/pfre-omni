@@ -181,4 +181,77 @@ class DirectoryEntityController extends Controller
         return redirect()->route('directory.show', $directoryEntity)
             ->with('success', 'Relationship archived.');
     }
+
+    public function storeBranch(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless($directoryEntity->entity_type === 'company', 404);
+
+        $data = $request->validate([
+            'branch_name' => ['required', 'string', 'max:190'],
+            'branch_type' => ['required', Rule::in(['head_office', 'registered_office', 'office', 'warehouse', 'site', 'other'])],
+            'branch_code' => ['nullable', 'string', 'max:80'],
+            'phone' => ['nullable', 'string', 'max:32'],
+            'email' => ['nullable', 'email', 'max:254'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        if (!empty($data['branch_code']) && DirectoryCompanyBranch::where('company_entity_id', $directoryEntity->id)->where('branch_code', $data['branch_code'])->exists()) {
+            return back()->withErrors(['branch_code' => 'This branch code is already used by this company.'])->withInput();
+        }
+
+        DirectoryCompanyBranch::create([
+            ...$data,
+            'company_entity_id' => $directoryEntity->id,
+            'is_head_office' => $data['branch_type'] === 'head_office',
+            'created_by' => $request->user()->id,
+        ]);
+
+        return redirect()->route('directory.show', $directoryEntity)->with('success', 'Company branch added.');
+    }
+
+    public function storeAddress(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+
+        $fields = [
+            'line_1', 'line_2', 'building_name', 'society_name', 'wing', 'flat_unit_number',
+            'road', 'landmark', 'area', 'village', 'taluka_sub_district', 'sub_division',
+            'district', 'division', 'state', 'postal_code', 'police_station', 'post_office',
+            'survey_number', 'hissa_number', 'cts_number', 'railway_station', 'metro_station',
+            'bus_stop', 'fire_station',
+        ];
+        $rules = ['address_type' => ['required', Rule::in(['primary', 'registered', 'office', 'residential', 'billing', 'correspondence', 'other'])], 'country' => ['required', 'string', 'size:2'], 'notes' => ['nullable', 'string', 'max:2000']];
+        foreach ($fields as $field) {
+            $rules[$field] = ['nullable', 'string', 'max:' . ($field === 'postal_code' ? 12 : 190)];
+        }
+        $data = $request->validate($rules);
+
+        DirectoryAddress::create([
+            ...$data,
+            'entity_id' => $directoryEntity->id,
+            'is_primary' => $data['address_type'] === 'primary',
+        ]);
+
+        return redirect()->route('directory.show', $directoryEntity)->with('success', 'Address added.');
+    }
+
+    public function destroyBranch(Request $request, DirectoryEntity $directoryEntity, DirectoryCompanyBranch $branch): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless($directoryEntity->entity_type === 'company' && $branch->company_entity_id === $directoryEntity->id, 404);
+        $branch->delete();
+
+        return redirect()->route('directory.show', $directoryEntity)->with('success', 'Branch archived.');
+    }
+
+    public function destroyAddress(Request $request, DirectoryEntity $directoryEntity, DirectoryAddress $address): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless($address->entity_id === $directoryEntity->id, 404);
+        $address->delete();
+
+        return redirect()->route('directory.show', $directoryEntity)->with('success', 'Address archived.');
+    }
+
 }
