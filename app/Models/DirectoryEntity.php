@@ -39,7 +39,7 @@ class DirectoryEntity extends Model
          ->withTimestamps();
     }
 
-    public function scopeOwnedBy($query, int $userId)
+    public function branches(): HasMany\n    {\n        return $this->hasMany(DirectoryCompanyBranch::class, 'company_entity_id');\n    }\n\n    public function addresses(): HasMany\n    {\n        return $this->hasMany(DirectoryAddress::class, 'entity_id');\n    }\n\n    public function scopeOwnedBy($query, int $userId)
     {
         return $query->where('owner_user_id', $userId);
     }
