@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use App\Models\DirectoryEntity;
 use App\Models\DirectoryCommunicationPoint;
 use App\Models\DirectoryEntityRelationship;
+use App\Models\DirectoryCompanyBranch;
+use App\Models\DirectoryAddress;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -108,7 +110,9 @@ class DirectoryEntityController extends Controller
             ->get(['id', 'display_name', 'entity_type']);
 
         return view('directory.show', [
-            'entity' => $directoryEntity,\n            'addresses' => $directoryEntity->addresses,\n            'branches' => $directoryEntity->branches,
+            'entity' => $directoryEntity,
+            'addresses' => $directoryEntity->addresses,
+            'branches' => $directoryEntity->branches,
             'relationships' => $relationships,
             'availableEntities' => $availableEntities,
             'relationshipTypes' => [
