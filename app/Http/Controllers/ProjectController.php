@@ -25,6 +25,36 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
+    public function show(int $project)
+    {
+        $record = DB::table('projects')->where('id', $project)->first();
+        abort_if(!$record, 404);
+        $properties = DB::table('properties')->where('project_id', $project)->whereNull('deleted_at')->orderBy('unit_number')->get();
+        return view('projects.show', ['project' => $record, 'properties' => $properties]);
+    }
+
+    public function edit(int $project)
+    {
+        $record = DB::table('projects')->where('id', $project)->first();
+        abort_if(!$record, 404);
+        return view('projects.edit', ['project' => $record]);
+    }
+
+    public function update(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'maharera_reg_no' => ['nullable', 'string', 'max:255', Rule::unique('projects', 'maharera_reg_no')->ignore($project)],
+            'location_area' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:2000'],
+            'status' => ['required', Rule::in(['Under Construction', 'Ready Possession', 'Pre-Launch'])],
+        ]);
+        $data['updated_at'] = now();
+        DB::table('projects')->where('id', $project)->update($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Project updated.');
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
