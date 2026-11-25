@@ -69,7 +69,8 @@ class ProjectController extends Controller
         $data['updated_at'] = now();
         DB::table('projects')->insert($data);
 
-        return redirect()->route('inventory.projects.index')
+        $id = (int) DB::getPdo()->lastInsertId();
+        return redirect()->route('inventory.projects.show', $id)
             ->with('success', 'Project created successfully. You can now add its properties.');
     }
 }
