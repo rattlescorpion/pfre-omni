@@ -11,7 +11,10 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = DB::table('projects')
-            ->leftJoin('properties', function ($join) {\n                $join->on('properties.project_id', '=', 'projects.id')\n                    ->whereNull('properties.deleted_at');\n            })
+            ->leftJoin('properties', function ($join) {
+                $join->on('properties.project_id', '=', 'projects.id')
+                    ->whereNull('properties.deleted_at');
+            })
             ->select('projects.*', DB::raw('COUNT(properties.id) as properties_count'))
             ->groupBy('projects.id', 'projects.name', 'projects.maharera_reg_no', 'projects.location_area', 'projects.address', 'projects.status', 'projects.created_at', 'projects.updated_at')
             ->orderBy('projects.name')
