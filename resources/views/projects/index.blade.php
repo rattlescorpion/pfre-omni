@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pt-2 sm:px-6 lg:px-8">
+        <div><h1 class="text-2xl font-bold text-slate-900">Projects</h1><p class="mt-1 text-sm text-slate-500">Manage developments and their property inventory</p></div>
+        <a href="{{ route('inventory.projects.create') }}" class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">+ Add Project</a>
+    </div>
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if (session('success'))<div class="mb-5 rounded-lg bg-green-50 p-4 text-sm text-green-800">{{ session('success') }}</div>@endif
