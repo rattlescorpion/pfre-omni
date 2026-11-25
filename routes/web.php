@@ -61,9 +61,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
         Route::resource('projects', ProjectController::class);
-        Route::resource('properties', PropertyController::class);
+        Route::resource('properties', PropertyController::class)->only(['index', 'create', 'store']);
         
-        Route::get('map-view', [PropertyController::class, 'map'])->name('map');
         Route::post('{id}/status', [InventoryController::class, 'updateStatus'])->name('status.update');
     });
 
