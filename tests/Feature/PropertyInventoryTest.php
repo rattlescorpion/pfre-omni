@@ -37,7 +37,6 @@ class PropertyInventoryTest extends TestCase
             'status' => 'Available',
         ]);
 
-        $response->assertRedirect(route('inventory.properties.index'));
         $this->assertDatabaseHas('properties', [
             'project_id' => $projectId,
             'unit_number' => 'A-1204',
@@ -46,6 +45,8 @@ class PropertyInventoryTest extends TestCase
             'type' => 'Residential',
             'status' => 'Available',
         ]);
+        $created = DB::table('properties')->where('project_id', $projectId)->where('unit_number', 'A-1204')->first();
+        $response->assertRedirect(route('inventory.properties.show', $created->id));
     }
 
     public function test_property_cannot_be_created_without_a_valid_project(): void
