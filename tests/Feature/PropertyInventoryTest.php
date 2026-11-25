@@ -47,6 +47,7 @@ class PropertyInventoryTest extends TestCase
         ]);
         $created = DB::table('properties')->where('project_id', $projectId)->where('unit_number', 'A-1204')->first();
         $response->assertRedirect(route('inventory.properties.show', $created->id));
+        $this->assertDatabaseHas('audit_logs', ['event' => 'http_request', 'auditable_type' => 'http_request', 'user_id' => $user->id]);
     }
 
     public function test_property_cannot_be_created_without_a_valid_project(): void
