@@ -18,7 +18,7 @@
                         <select id="project_id" name="project_id" required class="w-full rounded-lg border-slate-300 focus:border-blue-600 focus:ring-blue-600">
                             <option value="">Select project</option>
                             @foreach ($projects as $project)
-                                <option value="{{ $project->id }}" @selected(old('project_id') == $project->id)>{{ $project->name }}</option>
+                                <option value="{{ $project->id }}" @selected(old('project_id', request('project_id')) == $project->id)>{{ $project->name }}</option>
                             @endforeach
                         </select>
                         @if ($projects->isEmpty())
