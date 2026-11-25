@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-namespace App\Services\Shared;
+namespace App\\Services\\Shared;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Request;
+use Illuminate\\Support\\Facades\\DB;
+use Illuminate\\Support\\Facades\\Request;
 
 class AuditService
 {
@@ -21,7 +21,7 @@ class AuditService
             'user_id' => $userId,
             'event' => $action,
             'auditable_type' => $entityType,
-            'auditable_id' => $actualId,
+            'auditable_id' => is_numeric($actualId) ? (int) $actualId : 0,
             'old_values' => json_encode($oldValues),
             'new_values' => json_encode($newValues),
             'ip_address' => Request::ip(),
