@@ -89,4 +89,27 @@ class PropertyInventoryTest extends TestCase
             ->assertSee('B-902')
             ->assertSee('9,200,000');
     }
+    public function test_property_can_be_updated_and_soft_archived(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $projectId = $this->createProject();
+        $propertyId = DB::table('properties')->insertGetId([
+            'project_id' => $projectId, 'unit_number' => 'C-301', 'carpet_area' => 600,
+            'base_price' => 10000000, 'type' => 'Residential', 'status' => 'Available',
+            'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->actingAs($user)->put(route('inventory.properties.update', $propertyId), [
+            'project_id' => $projectId, 'unit_number' => 'C-302', 'carpet_area' => 610,
+            'base_price' => 10500000, 'type' => 'Residential', 'status' => 'Blocked',
+        ])->assertRedirect(route('inventory.properties.show', $propertyId));
+
+        $this->assertDatabaseHas('properties', ['id' => $propertyId, 'unit_number' => 'C-302', 'status' => 'Blocked']);
+
+        $this->actingAs($user)->delete(route('inventory.properties.destroy', $propertyId))
+            ->assertRedirect(route('inventory.properties.index'));
+
+        $this->assertSoftDeleted('properties', ['id' => $propertyId]);
+    }
+
 }
