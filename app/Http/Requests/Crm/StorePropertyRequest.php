@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\\Http\\Requests\\Crm;
+namespace App\Http\Requests\Crm;
 
-use Illuminate\\Foundation\\Http\\FormRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 final class StorePropertyRequest extends FormRequest
 {
