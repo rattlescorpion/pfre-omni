@@ -28,7 +28,7 @@
                             @forelse ($properties as $property)
                                 <tr class="hover:bg-slate-50">
                                     <td class="px-5 py-4 text-sm font-medium text-slate-900">{{ $property->project_name }}</td>
-                                    <td class="px-5 py-4 text-sm text-slate-700"><a class="font-semibold text-blue-700 hover:underline" href="{{ route('inventory.properties.show', $property->id) }}">{{ $property->unit_number }}</a></td>
+                                    <td class="px-5 py-4 text-sm text-slate-700"><a class="font-semibold text-blue-700 hover:underline" href="{{ route('inventory.properties.show', $property->id) }}"><a class="font-semibold text-blue-700 hover:underline" href="{{ route('inventory.properties.show', $property->id) }}">{{ $property->unit_number }}</a></a></td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $property->type }}</td>
                                     <td class="px-5 py-4 text-right text-sm tabular-nums text-slate-700">{{ number_format((float) $property->carpet_area, 2) }} sq. ft.</td>
                                     <td class="px-5 py-4 text-right text-sm tabular-nums text-slate-700">₹{{ number_format((float) $property->base_price, 0) }}</td>
