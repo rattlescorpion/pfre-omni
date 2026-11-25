@@ -22,7 +22,8 @@ class ProjectInventoryTest extends TestCase
             'status' => 'Under Construction',
         ]);
 
-        $response->assertSessionHasNoErrors();\n        $response->assertRedirect();\n        $this->assertDatabaseHas('projects', ['name' => 'Orca Heights', 'maharera_reg_no' => 'P51800012345']);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();\n        $this->assertDatabaseHas('projects', ['name' => 'Orca Heights', 'maharera_reg_no' => 'P51800012345']);
         $project = DB::table('projects')->where('name', 'Orca Heights')->first();
         $response->assertRedirect(route('inventory.projects.show', $project->id));
 
