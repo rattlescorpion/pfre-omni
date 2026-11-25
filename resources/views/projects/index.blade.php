@@ -17,7 +17,7 @@
                         <tbody class="divide-y divide-slate-100">
                             @forelse ($projects as $project)
                                 <tr class="hover:bg-slate-50">
-                                    <td class="px-5 py-4 text-sm font-semibold text-slate-900">{{ $project->name }}</td>
+                                    <td class="px-5 py-4 text-sm font-semibold text-slate-900"><a class="text-blue-700 hover:underline" href="{{ route('inventory.projects.show', $project->id) }}">{{ $project->name }}</a></td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->location_area }}</td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->maharera_reg_no ?: '—' }}</td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->status }}</td>
