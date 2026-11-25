@@ -21,10 +21,11 @@ class PropertyController extends Controller
         return view('properties.index', compact('properties'));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $projects = DB::table('projects')->orderBy('name')->get(['id', 'name']);
-        return view('properties.create', compact('projects'));
+        $selectedProjectId = $request->integer('project_id');
+        return view('properties.create', compact('projects', 'selectedProjectId'));
     }
 
     public function store(StorePropertyRequest $request)
