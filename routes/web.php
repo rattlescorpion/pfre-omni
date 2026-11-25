@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 // Controllers (ensure these exist in app/Http/Controllers)
 use App\Http\Controllers\DashboardController;
