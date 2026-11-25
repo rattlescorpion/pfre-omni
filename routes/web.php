@@ -30,6 +30,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // 2. CORE DASHBOARD
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/settings', [DashboardController::class, 'settings'])->name('settings');
+    Route::get('/profile', [DashboardController::class, 'settings'])->name('profile');
+    Route::post('/logout', function () { Auth::logout(); request()->session()->invalidate(); request()->session()->regenerateToken(); return redirect('/'); })->name('logout');
 
     // 3. CONTACTS & COMPANIES 360° DIRECTORY
     Route::prefix('directory')->name('directory.')->controller(DirectoryEntityController::class)->group(function () {
