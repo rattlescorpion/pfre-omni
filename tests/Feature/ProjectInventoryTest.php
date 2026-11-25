@@ -13,6 +13,7 @@ class ProjectInventoryTest extends TestCase
 
     public function test_authenticated_user_can_create_and_update_a_project(): void
     {
+        $this->withoutExceptionHandling();
         $user = User::factory()->create(['email_verified_at' => now()]);
         $response = $this->actingAs($user)->post(route('inventory.projects.store'), [
             'name' => 'Orca Heights',
