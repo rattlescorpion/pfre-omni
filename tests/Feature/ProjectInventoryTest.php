@@ -22,7 +22,7 @@ class ProjectInventoryTest extends TestCase
             'status' => 'Under Construction',
         ]);
 
-        $response->assertSessionHasNoErrors();
+        if ($response->status() >= 500) { fwrite(STDERR, "PROJECT STORE ERROR: ".$response->getContent().PHP_EOL); }\n        $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('projects', ['name' => 'Orca Heights', 'maharera_reg_no' => 'P51800012345']);
         $project = DB::table('projects')->where('name', 'Orca Heights')->first();
