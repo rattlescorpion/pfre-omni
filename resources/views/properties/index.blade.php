@@ -1,10 +1,6 @@
-<x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-wrap items-center justify-between gap-3">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Property Inventory</h2>
-            <a href="{{ route('inventory.properties.create') }}" class="inline-flex items-center rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800">+ Add Property</a>
-        </div>
-    </x-slot>
+@extends('layouts.app')
+
+@section('content')
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,4 +40,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection
