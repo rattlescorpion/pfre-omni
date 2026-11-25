@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 pt-2 sm:px-6 lg:px-8">
+        <div><h1 class="text-2xl font-bold text-slate-900">Property Inventory</h1><p class="mt-1 text-sm text-slate-500">Manage units linked to their projects</p></div>
+        <a href="{{ route('inventory.properties.create') }}" class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">+ Add Property</a>
+    </div>
 
     <div class="py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
