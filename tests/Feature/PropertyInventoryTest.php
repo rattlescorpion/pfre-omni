@@ -25,6 +25,7 @@ class PropertyInventoryTest extends TestCase
 
     public function test_authenticated_user_can_add_property_to_an_existing_project(): void
     {
+        $this->withoutExceptionHandling();
         $user = User::factory()->create(['email_verified_at' => now()]);
         $projectId = $this->createProject();
 
