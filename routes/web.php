@@ -66,6 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('projects', ProjectController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update']);
         Route::post('projects/{project}/professionals', [ProjectController::class, 'addProfessional'])->name('projects.professionals.store');
         Route::delete('projects/{project}/professionals/{professional}', [ProjectController::class, 'removeProfessional'])->name('projects.professionals.destroy');
+        Route::post('projects/{project}/land-parcels', [ProjectController::class, 'storeLandParcel'])->name('projects.land-parcels.store');
         Route::post('projects/{project}/phases', [ProjectController::class, 'storePhase'])->name('projects.phases.store');
         Route::post('projects/{project}/approvals', [ProjectController::class, 'storeApproval'])->name('projects.approvals.store');
         Route::post('projects/{project}/due-diligence', [ProjectController::class, 'storeDueDiligence'])->name('projects.due-diligence.store');
