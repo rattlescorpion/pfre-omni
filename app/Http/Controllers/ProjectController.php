@@ -127,8 +127,8 @@ class ProjectController extends Controller
                 ->where('project_id', $project)->whereNull('project_phase_id')
                 ->where('directory_entity_id', $entity->id)
                 ->where('professional_role', $data['professional_role'])
-                ->where('owner_user_id', $request->user()->id)->whereNull('deleted_at')->first();
-            if ($existing) {
+                ->where('owner_user_id', $request->user()->id)->first();
+            if ($existing && $existing->deleted_at === null) {
                 throw \Illuminate\Validation\ValidationException::withMessages([
                     'directory_entity_id' => 'This professional is already linked to this project in this role.',
                 ]);
@@ -139,6 +139,17 @@ class ProjectController extends Controller
                     ->whereNull('project_phase_id')->where('professional_role', $data['professional_role'])
                     ->where('owner_user_id', $request->user()->id)->whereNull('deleted_at')
                     ->update(['is_primary' => false, 'updated_at' => now()]);
+            }
+
+            if ($existing) {
+                DB::table('project_professionals')->where('id', $existing->id)->update([
+                    'deleted_at' => null,
+                    'is_primary' => !empty($data['is_primary']),
+                    'engagement_status' => 'active',
+                    'notes' => $data['notes'] ?? null,
+                    'updated_at' => now(),
+                ]);
+                return;
             }
 
             DB::table('project_professionals')->insert([
@@ -254,7 +265,7 @@ class ProjectController extends Controller
         ]);
         $data['project_id'] = $project;
         $data['created_by'] = $request->user()->id;
-        $data['source_checked_at'] = !empty($data['source_url']) ? now() : null;
+        $data['source_checked_at'] = null; // A source URL is not proof that the source has been independently checked.
         $data['created_at'] = now();
         $data['updated_at'] = now();
         DB::table('project_progress_updates')->insert($data);
