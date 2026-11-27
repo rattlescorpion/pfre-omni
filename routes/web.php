@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('projects/{project}/phases', [ProjectController::class, 'storePhase'])->name('projects.phases.store');
         Route::post('projects/{project}/approvals', [ProjectController::class, 'storeApproval'])->name('projects.approvals.store');
         Route::post('projects/{project}/due-diligence', [ProjectController::class, 'storeDueDiligence'])->name('projects.due-diligence.store');
+        Route::post('projects/{project}/financial-compliance', [ProjectController::class, 'storeFinancialCompliance'])->name('projects.financial-compliance.store');
         Route::post('projects/{project}/progress-updates', [ProjectController::class, 'storeProgressUpdate'])->name('projects.progress-updates.store');
         Route::post('projects/{project}/documents', [ProjectController::class, 'storeDocument'])->name('projects.documents.store');
         Route::get('projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument'])->name('projects.documents.download');
