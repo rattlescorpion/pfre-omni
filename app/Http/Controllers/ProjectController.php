@@ -238,9 +238,11 @@ class ProjectController extends Controller
             'reference_number' => ['nullable', 'string', 'max:120'],
             'findings' => ['nullable', 'string', 'max:5000'],
             'action_required' => ['nullable', 'string', 'max:5000'],
+            'evidence_document_id' => ['required_if:check_status,verified', 'nullable', 'integer', Rule::exists('project_documents', 'id')->where('project_id', $project)->where('uploaded_by', $request->user()->id)->whereNull('deleted_at')],
         ]);
         $data['project_id'] = $project;
         $data['checked_by'] = $request->user()->id;
+        $data['evidence_document_id'] = $data['evidence_document_id'] ?? null;
         $data['created_at'] = now();
         $data['updated_at'] = now();
         DB::table('project_due_diligence_checks')->insert($data);
