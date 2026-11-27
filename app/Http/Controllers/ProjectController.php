@@ -65,10 +65,11 @@ class ProjectController extends Controller
         $checks = DB::table('project_due_diligence_checks')->where('project_id', $project)
             ->whereNull('deleted_at')->orderBy('check_type')->get();
 
-        return view('projects.show', compact(
-            'project', 'record', 'properties', 'phases', 'professionals',
-            'availableProfessionals', 'documents', 'approvals', 'updates', 'checks'
-        ));
+        return view('projects.show', [
+            'project' => $record, 'properties' => $properties, 'phases' => $phases,
+            'professionals' => $professionals, 'availableProfessionals' => $availableProfessionals,
+            'documents' => $documents, 'approvals' => $approvals, 'updates' => $updates, 'checks' => $checks,
+        ]);
     }
 
     public function edit(int $project)
