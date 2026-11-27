@@ -119,8 +119,15 @@ class DirectoryEntityController extends Controller
             ->orderBy('display_name')
             ->get(['id', 'display_name', 'entity_type']);
 
+        $promoterTrackRecords = $directoryEntity->entity_type === 'company'
+            ? DB::table('directory_company_project_track_records')
+                ->where('company_entity_id', $directoryEntity->id)
+                ->whereNull('deleted_at')->orderByDesc('launch_date')->get()
+            : collect();
+
         return view('directory.show', [
             'entity' => $directoryEntity,
+            'promoterTrackRecords' => $promoterTrackRecords,
             'addresses' => $directoryEntity->addresses,
             'propertyOwnerships' => $directoryEntity->propertyOwnerships,
             'availableProperties' => $availableProperties,
@@ -235,6 +242,38 @@ class DirectoryEntityController extends Controller
 
         return redirect()->route('directory.show', $directoryEntity)
             ->with('success', 'Relationship archived.');
+    }
+
+    public function storePromoterTrackRecord(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
+    {
+        abort_unless($directoryEntity->owner_user_id === $request->user()->id, 404);
+        abort_unless($directoryEntity->entity_type === 'company', 404);
+
+        $data = $request->validate([
+            'project_name' => ['required', 'string', 'max:190'],
+            'location' => ['nullable', 'string', 'max:190'],
+            'project_type' => ['nullable', 'string', 'max:60'],
+            'land_type' => ['nullable', 'string', 'max:80'],
+            'reported_status' => ['nullable', 'string', 'max:60'],
+            'launch_date' => ['nullable', 'date'],
+            'completion_date' => ['nullable', 'date'],
+            'delay_details' => ['nullable', 'string', 'max:5000'],
+            'pending_cases' => ['nullable', 'string', 'max:5000'],
+            'pending_payments' => ['nullable', 'string', 'max:5000'],
+            'source_url' => ['nullable', 'url', 'max:1000'],
+            'source_checked_on' => ['nullable', 'date'],
+        ]);
+
+        DB::table('directory_company_project_track_records')->insert([
+            ...$data,
+            'company_entity_id' => $directoryEntity->id,
+            'created_by' => $request->user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirect()->route('directory.show', $directoryEntity)
+            ->with('success', 'Promoter track record added. Confirm its source before relying on it.');
     }
 
     public function storeBranch(Request $request, DirectoryEntity $directoryEntity): RedirectResponse
