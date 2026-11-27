@@ -24,6 +24,9 @@
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Land Area</dt><dd class="mt-1 font-medium">{{ $project->land_area_sqm ? number_format((float)$project->land_area_sqm, 2).' sq. m.' : 'Not recorded' }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Buildings / Wings</dt><dd class="mt-1 font-medium">{{ $project->total_buildings ?? '—' }} / {{ $project->total_wings ?? '—' }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Proposed Units / Plots</dt><dd class="mt-1 font-medium">{{ $project->total_units ?? '—' }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase text-slate-500">Proposed / Consumed FSI</dt><dd class="mt-1 font-medium">{{ $project->proposed_fsi ?? '—' }} / {{ $project->consumed_fsi ?? '—' }}</dd></div>
+            <div class="sm:col-span-2 lg:col-span-3"><dt class="text-xs font-semibold uppercase text-slate-500">Development Works &amp; Facilities</dt><dd class="mt-1 text-sm">@php($facilityList = json_decode($project->development_facilities ?? '[]', true) ?: []){{ count($facilityList) ? implode(', ', $facilityList) : 'Not recorded' }}</dd></div>
+            <div class="sm:col-span-2 lg:col-span-3"><dt class="text-xs font-semibold uppercase text-slate-500">Boundary Description</dt><dd class="mt-1 whitespace-pre-line text-sm">{{ $project->boundary_description ?: 'Not recorded' }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Launch / Completion</dt><dd class="mt-1 font-medium">{{ $project->launch_date ?: '—' }} / {{ $project->proposed_completion_date ?: '—' }}</dd></div>
             <div class="sm:col-span-2 lg:col-span-3"><dt class="text-xs font-semibold uppercase text-slate-500">Description</dt><dd class="mt-1 whitespace-pre-line text-sm">{{ $project->description ?: 'No description recorded.' }}</dd></div>
         </dl>
