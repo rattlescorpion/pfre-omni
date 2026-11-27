@@ -136,4 +136,26 @@ class MahaReraProject360Test extends TestCase
         $this->assertSame(0, (int) $document->is_public);
         Storage::disk('local')->assertExists($document->storage_path);
     }
+
+    public function test_company_360_can_store_promoter_previous_project_track_record(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $company = $this->directoryEntity($user, 'company', 'Promoter Group');
+
+        $this->actingAs($user)->post(route('directory.promoter-track-records.store', $company), [
+            'project_name' => 'Earlier Development',
+            'location' => 'Mumbai',
+            'project_type' => 'Residential',
+            'reported_status' => 'Delayed',
+            'delay_details' => 'Delay reported in source disclosure.',
+            'pending_cases' => 'Not independently verified.',
+        ])->assertSessionHasNoErrors()
+          ->assertRedirect(route('directory.show', $company));
+
+        $this->assertDatabaseHas('directory_company_project_track_records', [
+            'company_entity_id' => $company,
+            'project_name' => 'Earlier Development',
+            'reported_status' => 'Delayed',
+        ]);
+    }
 }
