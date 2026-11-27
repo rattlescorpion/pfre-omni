@@ -15,7 +15,8 @@ class ProjectController extends Controller
     public function index()
     {
         $projects = DB::table('projects')
-            ->select('projects.*')
+            ->leftJoin('directory_entities as developer', 'developer.id', '=', 'projects.developer_directory_entity_id')
+            ->select('projects.*', 'developer.display_name as developer_name')
             ->selectSub(
                 DB::table('properties')
                     ->selectRaw('COUNT(*)')
