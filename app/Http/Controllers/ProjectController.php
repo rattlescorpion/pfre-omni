@@ -42,6 +42,7 @@ class ProjectController extends Controller
 
         $properties = DB::table('properties')->where('project_id', $project)
             ->whereNull('deleted_at')->orderBy('unit_number')->get();
+        $landParcels = DB::table('project_land_parcels')->where('project_id', $project)->whereNull('deleted_at')->orderBy('parcel_label')->get();
         $phases = DB::table('project_phases')->where('project_id', $project)
             ->whereNull('deleted_at')->orderBy('phase_name')->get();
         $professionals = DB::table('project_professionals')
@@ -66,7 +67,7 @@ class ProjectController extends Controller
             ->whereNull('deleted_at')->orderBy('check_type')->get();
 
         return view('projects.show', [
-            'project' => $record, 'properties' => $properties, 'phases' => $phases,
+            'project' => $record, 'properties' => $properties, 'phases' => $phases, 'landParcels' => $landParcels,
             'professionals' => $professionals, 'availableProfessionals' => $availableProfessionals,
             'documents' => $documents, 'approvals' => $approvals, 'updates' => $updates, 'checks' => $checks,
         ]);
@@ -180,6 +181,33 @@ class ProjectController extends Controller
 
         return redirect()->route('inventory.projects.show', $project)
             ->with('success', 'Project association removed. The source Contact / Company record was not deleted.');
+    }
+
+    public function storeLandParcel(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'parcel_label' => ['nullable', 'string', 'max:190'],
+            'survey_number' => ['nullable', 'string', 'max:120'],
+            'hissa_number' => ['nullable', 'string', 'max:120'],
+            'cts_number' => ['nullable', 'string', 'max:120'],
+            'land_area_sqm' => ['nullable', 'numeric', 'gt:0'],
+            'land_type' => ['nullable', 'string', 'max:80'],
+            'title_status' => ['required', Rule::in(['not_reviewed', 'under_review', 'clear_as_reported', 'encumbered', 'disputed', 'not_applicable'])],
+            'encumbrance_details' => ['nullable', 'string', 'max:10000'],
+            'boundary_description' => ['nullable', 'string', 'max:5000'],
+            'north_latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'north_longitude' => ['nullable', 'numeric', 'between:-180,180'],
+            'south_latitude' => ['nullable', 'numeric', 'between:-90,90'],
+            'south_longitude' => ['nullable', 'numeric', 'between:-180,180'],
+        ]);
+        $data['project_id'] = $project;
+        $data['created_by'] = $request->user()->id;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_land_parcels')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Land parcel record added. Title status is an internal review field, not a legal title certification.');
     }
 
     public function storePhase(Request $request, int $project)
