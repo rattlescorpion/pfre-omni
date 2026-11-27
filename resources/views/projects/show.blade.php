@@ -31,6 +31,27 @@
     </section>
 
     <section class="rounded-xl border bg-white p-5 shadow-sm">
+        <div class="mb-4"><h2 class="text-lg font-bold">Land Parcels & Title References</h2><p class="text-sm text-slate-500">Capture survey, hissa and CTS references separately. A recorded title status is an internal review state, not a legal title opinion.</p></div>
+        <form method="POST" action="{{ route('inventory.projects.land-parcels.store', $project->id) }}" class="mb-4 grid gap-3 rounded-lg bg-slate-50 p-4 md:grid-cols-3">@csrf
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Parcel Label</label><input name="parcel_label" class="w-full rounded-lg border-slate-300 text-sm" placeholder="Plot / Survey Parcel"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Survey Number</label><input name="survey_number" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Hissa Number</label><input name="hissa_number" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">CTS Number</label><input name="cts_number" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Land Area (sq. m.)</label><input type="number" min="0" step="0.01" name="land_area_sqm" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Land Type</label><input name="land_type" class="w-full rounded-lg border-slate-300 text-sm" placeholder="As per source document"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">Title Review Status *</label><select name="title_status" required class="w-full rounded-lg border-slate-300 text-sm">@foreach(['not_reviewed'=>'Not Reviewed','under_review'=>'Under Review','clear_as_reported'=>'Clear as Reported (Unverified)','encumbered'=>'Encumbered','disputed'=>'Disputed','not_applicable'=>'Not Applicable'] as $v=>$label)<option value="{{ $v }}">{{ $label }}</option>@endforeach</select></div>
+            <div class="md:col-span-2"><label class="mb-1 block text-xs font-semibold uppercase">Encumbrance Details</label><textarea name="encumbrance_details" rows="2" class="w-full rounded-lg border-slate-300 text-sm"></textarea></div>
+            <div class="md:col-span-3"><label class="mb-1 block text-xs font-semibold uppercase">Boundary Description</label><textarea name="boundary_description" rows="2" class="w-full rounded-lg border-slate-300 text-sm"></textarea></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">North Latitude</label><input type="number" step="0.0000001" name="north_latitude" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">North Longitude</label><input type="number" step="0.0000001" name="north_longitude" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">South Latitude</label><input type="number" step="0.0000001" name="south_latitude" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div><label class="mb-1 block text-xs font-semibold uppercase">South Longitude</label><input type="number" step="0.0000001" name="south_longitude" class="w-full rounded-lg border-slate-300 text-sm"></div>
+            <div class="md:col-span-3"><button class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white">Add Land Parcel</button></div>
+        </form>
+        <div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="bg-slate-50 text-xs uppercase text-slate-500"><tr><th class="px-3 py-3">Parcel</th><th class="px-3 py-3">Survey / Hissa / CTS</th><th class="px-3 py-3">Land Area</th><th class="px-3 py-3">Title Review</th></tr></thead><tbody class="divide-y">@forelse($landParcels as $parcel)<tr><td class="px-3 py-3">{{ $parcel->parcel_label ?: 'Land parcel' }}</td><td class="px-3 py-3">{{ $parcel->survey_number ?: '—' }} / {{ $parcel->hissa_number ?: '—' }} / {{ $parcel->cts_number ?: '—' }}</td><td class="px-3 py-3">{{ $parcel->land_area_sqm ? number_format((float)$parcel->land_area_sqm,2).' sq. m.' : '—' }}</td><td class="px-3 py-3">{{ ucwords(str_replace('_',' ',$parcel->title_status)) }}</td></tr>@empty<tr><td colspan="4" class="px-3 py-5 text-center text-slate-500">No land parcel references recorded.</td></tr>@endforelse</tbody></table></div>
+    </section>
+
+    <section class="rounded-xl border bg-white p-5 shadow-sm">
         <div class="mb-4 flex flex-wrap items-center justify-between gap-2"><div><h2 class="text-lg font-bold">MahaRERA Phases & Registration</h2><p class="text-sm text-slate-500">Each phase is tracked as a separately registered project where applicable.</p></div><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold">{{ $phases->count() }} phases</span></div>
         <form method="POST" action="{{ route('inventory.projects.phases.store', $project->id) }}" class="mb-4 grid gap-3 rounded-lg bg-slate-50 p-4 md:grid-cols-3">@csrf
 <div><label class="mb-1 block text-xs font-semibold uppercase">Phase Name *</label><input name="phase_name" required class="w-full rounded-lg border-slate-300 text-sm" placeholder="Phase 1 / Tower A"></div>
