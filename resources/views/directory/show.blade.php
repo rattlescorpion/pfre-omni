@@ -79,6 +79,41 @@
             @endforelse
         </div>
     </section>
+
+    <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">Promoter Project Track Record</h2>
+        <p class="mt-1 text-sm text-gray-500">Record the promoter's previous projects, current status, delays, pending cases, land type and payment matters as disclosed or evidenced. These entries are source records, not independently verified conclusions.</p>
+        <form method="POST" action="{{ route('directory.promoter-track-records.store', $entity) }}" class="mt-4 grid gap-3 md:grid-cols-2">
+            @csrf
+            <div><label class="mb-1 block text-sm font-medium">Previous Project Name *</label><input name="project_name" required maxlength="190" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Location</label><input name="location" maxlength="190" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Project Type</label><input name="project_type" maxlength="60" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Land Type</label><input name="land_type" maxlength="80" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Reported Status</label><input name="reported_status" maxlength="60" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white" placeholder="Completed / Ongoing / Delayed"></div>
+            <div><label class="mb-1 block text-sm font-medium">Launch Date</label><input type="date" name="launch_date" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Completion Date</label><input type="date" name="completion_date" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Source URL</label><input type="url" name="source_url" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div><label class="mb-1 block text-sm font-medium">Source Checked On</label><input type="date" name="source_checked_on" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></div>
+            <div class="md:col-span-2"><label class="mb-1 block text-sm font-medium">Delay Details</label><textarea name="delay_details" rows="2" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></textarea></div>
+            <div><label class="mb-1 block text-sm font-medium">Pending Cases</label><textarea name="pending_cases" rows="2" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></textarea></div>
+            <div><label class="mb-1 block text-sm font-medium">Pending Payments</label><textarea name="pending_payments" rows="2" class="w-full rounded-lg border-gray-300 text-sm dark:border-gray-600 dark:bg-gray-900 dark:text-white"></textarea></div>
+            <div class="md:col-span-2"><button class="rounded-lg bg-blue-700 px-4 py-2.5 text-sm font-semibold text-white hover:bg-blue-800">Add Track Record</button></div>
+        </form>
+        <div class="mt-5 space-y-3">
+            @forelse($promoterTrackRecords as $track)
+                <article class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                    <div class="flex flex-wrap justify-between gap-2"><h3 class="font-semibold text-gray-900 dark:text-white">{{ $track->project_name }}</h3><span class="text-xs text-gray-500">{{ $track->reported_status ?: 'Status not provided' }}</span></div>
+                    <p class="mt-1 text-sm text-gray-500">{{ $track->location ?: 'Location not provided' }} · {{ $track->project_type ?: 'Type not provided' }} · {{ $track->land_type ?: 'Land type not provided' }}</p>
+                    @if($track->delay_details)<p class="mt-2 text-sm"><strong>Delay:</strong> {{ $track->delay_details }}</p>@endif
+                    @if($track->pending_cases)<p class="mt-2 text-sm"><strong>Pending cases:</strong> {{ $track->pending_cases }}</p>@endif
+                    @if($track->pending_payments)<p class="mt-2 text-sm"><strong>Pending payments:</strong> {{ $track->pending_payments }}</p>@endif
+                    @if($track->source_url)<p class="mt-2 text-xs text-slate-500">Source: <a href="{{ $track->source_url }}" target="_blank" rel="noopener noreferrer" class="text-blue-700 underline">Open source</a> · Checked: {{ $track->source_checked_on ?: 'Date not provided' }}</p>@endif
+                </article>
+            @empty
+                <p class="text-sm text-gray-500">No previous project track records entered.</p>
+            @endforelse
+        </div>
+    </section>
     @endif
 
     <section class="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-700 dark:bg-gray-800">
