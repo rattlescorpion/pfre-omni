@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{directoryEntity}', 'show')->whereNumber('directoryEntity')->name('show');
         Route::post('/{directoryEntity}/relationships', 'storeRelationship')->whereNumber('directoryEntity')->name('relationships.store');
         Route::delete('/{directoryEntity}/relationships/{relationship}', 'destroyRelationship')->whereNumber('directoryEntity')->whereNumber('relationship')->name('relationships.destroy');
+        Route::post('/{directoryEntity}/promoter-track-records', 'storePromoterTrackRecord')->whereNumber('directoryEntity')->name('promoter-track-records.store');
         Route::post('/{directoryEntity}/branches', 'storeBranch')->whereNumber('directoryEntity')->name('branches.store');
         Route::delete('/{directoryEntity}/branches/{branch}', 'destroyBranch')->whereNumber('directoryEntity')->whereNumber('branch')->name('branches.destroy');
         Route::post('/{directoryEntity}/property-ownerships', 'storePropertyOwnership')->whereNumber('directoryEntity')->name('property-ownerships.store');
