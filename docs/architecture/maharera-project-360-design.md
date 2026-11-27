@@ -26,21 +26,21 @@ The handbook says a phase is a stand-alone real estate project for registration 
 ## Project 360° sections
 
 1. **Project identity:** name, type (residential/commercial/mixed/plotted/redevelopment), developer/promoter, address, locality, website and description.
-2. **Land & location:** land area, survey/hissa/CTS references, title and encumbrance records, boundary description and map coordinates. Store parcel/land records separately as the data model expands.
+2. **Land & location:** land area, survey/hissa/CTS references, land type, title-review state, encumbrance details, boundary description and boundary coordinates. These are stored as separate land-parcel records; a title-review label is not a legal title opinion.
 3. **Phases:** phase name, MahaRERA registration number, registration state, registration and validity dates, proposed/actual completion, phase land area and status.
-4. **Buildings / wings / units:** link the existing Properties inventory to the project and phase; preserve separate building, society, wing, floor and unit identifiers. Capture MahaRERA carpet area separately from balcony/verandah and open terrace area.
+4. **Buildings / wings / units:** link the existing Properties inventory to the project and phase; preserve separate building, society, wing, floor, configuration and unit identifiers. Capture MahaRERA carpet area separately from exclusive balcony, verandah and open-terrace areas, plus garage area/count. The carpet-area definition excludes external walls, service shafts, exclusive balcony/verandah and exclusive open terrace, while including internal partition walls.
 5. **Approvals:** approval type, authority, application/reference number, status, application/issue/expiry dates and evidence document. Include IOD, commencement certificate (including stage/floor limits), sanctioned plans, fire/environment/other NOCs and occupancy certificate.
 6. **Documents:** title deeds, encumbrance certificates, approvals, plans, allotment letter, agreement for sale, conveyance deed, MahaRERA certificate, quarterly updates and CA audit certificates. Store privately by default; public visibility must be an explicit reviewed flag.
-7. **Professionals & counterparties:** engineer, architect, structural engineer, chartered accountant in practice, contractors and project real-estate agents. Select existing individuals from Phonebook/Contacts 360° and firms from Companies 360° (currently both entity types are represented by `directory_entities`). Keep only a relationship record in the project; do not copy contact/company data.
+7. **Professionals & counterparties:** engineer, architect, structural engineer, chartered accountant in practice, contractors and project real-estate agents. Select existing individuals from Phonebook/Contacts 360° and firms from Companies 360° (currently both entity types are represented by `directory_entities`). Keep only a relationship record in the project; do not copy contact/company data. Company 360° also stores the promoter's previous project track record, including reported status, delay details, pending cases, land type and pending payments.
 8. **Quarterly progress:** period, publication date, completion percentage, apartments/plots/garages booked, approvals received/pending, reported status, summary and source link.
 9. **Due diligence:** promoter identity, project registration, land title, encumbrances, approvals, commencement certificate, tax/utility payments, litigation, allotment/agreement and carpet area.
 10. **Audit trail:** creator, updater, verifier, dates, status history and evidence source.
 
 ## Current implementation in this branch
 
-- Additive migration extends `projects` and creates `project_phases`, `project_professionals`, `project_documents`, `project_approvals`, `project_progress_updates` and `project_due_diligence_checks`.
-- Project create/edit screens capture project identity and development overview.
-- Project detail screen displays project overview, phases, professionals, approvals, documents, due-diligence status, quarterly updates and linked properties.
+- Additive migrations extend `projects` and `properties`, and create `project_phases`, `project_land_parcels`, `project_professionals`, `project_documents`, `project_approvals`, `project_progress_updates`, `project_due_diligence_checks` and Company 360° promoter track-record storage.
+- Project create/edit screens capture project identity, development overview, FSI, facilities and boundary description.
+- Project detail screen displays project overview, land parcels, phases, professionals, approvals, documents, due-diligence status, quarterly updates and linked properties including separate carpet/balcony/verandah/terrace/garage area fields.
 - Forms are provided for phases, professionals, approvals, document upload, due-diligence checks and quarterly updates.
 - Professional links use `directory_entities`, including both person and company records, with per-user ownership checks.
 - Uploaded project documents use private local storage and a protected download route. Documents default to unverified and non-public.
