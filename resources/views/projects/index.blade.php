@@ -13,6 +13,7 @@
                     <table class="min-w-full divide-y divide-slate-200">
                         <thead class="bg-slate-50"><tr>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Project</th>
+                            <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Developer</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Location</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">MahaRERA No.</th>
                             <th class="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">Status</th>
@@ -22,13 +23,14 @@
                             @forelse ($projects as $project)
                                 <tr class="hover:bg-slate-50">
                                     <td class="px-5 py-4 text-sm font-semibold text-slate-900"><a class="text-blue-700 hover:underline" href="{{ route('inventory.projects.show', $project->id) }}">{{ $project->name }}</a></td>
+                                    <td class="px-5 py-4 text-sm text-slate-700">{{ $project->developer_name ?: '—' }}</td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->location_area }}</td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->maharera_reg_no ?: '—' }}</td>
                                     <td class="px-5 py-4 text-sm text-slate-700">{{ $project->status }}</td>
                                     <td class="px-5 py-4 text-right text-sm tabular-nums text-slate-700">{{ $project->properties_count }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="5" class="px-5 py-10 text-center text-sm text-slate-500">No projects have been added yet.</td></tr>
+                                <tr><td colspan="6" class="px-5 py-10 text-center text-sm text-slate-500">No projects have been added yet.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
