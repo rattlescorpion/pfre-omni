@@ -37,7 +37,7 @@ class ProjectController extends Controller
 
     public function show(int $project)
     {
-        $record = DB::table('projects')->where('id', $project)->first();
+        $record = DB::table('projects')->leftJoin('directory_entities as developer', 'developer.id', '=', 'projects.developer_directory_entity_id')\n            ->select('projects.*', 'developer.display_name as developer_name')\n            ->where('projects.id', $project)->first();
         abort_if(!$record, 404);
 
         $properties = DB::table('properties')->where('project_id', $project)
