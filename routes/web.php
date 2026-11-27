@@ -42,6 +42,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/{directoryEntity}', 'show')->whereNumber('directoryEntity')->name('show');
         Route::post('/{directoryEntity}/relationships', 'storeRelationship')->whereNumber('directoryEntity')->name('relationships.store');
         Route::delete('/{directoryEntity}/relationships/{relationship}', 'destroyRelationship')->whereNumber('directoryEntity')->whereNumber('relationship')->name('relationships.destroy');
+        Route::post('/{directoryEntity}/promoter-track-records', 'storePromoterTrackRecord')->whereNumber('directoryEntity')->name('promoter-track-records.store');
         Route::post('/{directoryEntity}/branches', 'storeBranch')->whereNumber('directoryEntity')->name('branches.store');
         Route::delete('/{directoryEntity}/branches/{branch}', 'destroyBranch')->whereNumber('directoryEntity')->whereNumber('branch')->name('branches.destroy');
         Route::post('/{directoryEntity}/property-ownerships', 'storePropertyOwnership')->whereNumber('directoryEntity')->name('property-ownerships.store');
@@ -64,6 +65,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
         Route::resource('projects', ProjectController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        Route::post('projects/{project}/professionals', [ProjectController::class, 'addProfessional'])->name('projects.professionals.store');
+        Route::delete('projects/{project}/professionals/{professional}', [ProjectController::class, 'removeProfessional'])->name('projects.professionals.destroy');
+        Route::post('projects/{project}/land-parcels', [ProjectController::class, 'storeLandParcel'])->name('projects.land-parcels.store');
+        Route::post('projects/{project}/phases', [ProjectController::class, 'storePhase'])->name('projects.phases.store');
+        Route::post('projects/{project}/approvals', [ProjectController::class, 'storeApproval'])->name('projects.approvals.store');
+        Route::post('projects/{project}/due-diligence', [ProjectController::class, 'storeDueDiligence'])->name('projects.due-diligence.store');
+        Route::post('projects/{project}/financial-compliance', [ProjectController::class, 'storeFinancialCompliance'])->name('projects.financial-compliance.store');
+        Route::post('projects/{project}/progress-updates', [ProjectController::class, 'storeProgressUpdate'])->name('projects.progress-updates.store');
+        Route::post('projects/{project}/documents', [ProjectController::class, 'storeDocument'])->name('projects.documents.store');
+        Route::get('projects/{project}/documents/{document}/download', [ProjectController::class, 'downloadDocument'])->name('projects.documents.download');
         Route::resource('properties', PropertyController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
         
         Route::post('{id}/status', [InventoryController::class, 'updateStatus'])->name('status.update');
