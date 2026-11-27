@@ -64,6 +64,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('inventory')->name('inventory.')->group(function () {
         Route::get('/', [InventoryController::class, 'index'])->name('index');
         Route::resource('projects', ProjectController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update']);
+        Route::post('projects/{project}/professionals', [ProjectController::class, 'addProfessional'])->name('projects.professionals.store');
+        Route::delete('projects/{project}/professionals/{professional}', [ProjectController::class, 'removeProfessional'])->name('projects.professionals.destroy');
         Route::resource('properties', PropertyController::class)->only(['index', 'create', 'store', 'show', 'edit', 'update', 'destroy']);
         
         Route::post('{id}/status', [InventoryController::class, 'updateStatus'])->name('status.update');
