@@ -350,7 +350,7 @@ class ProjectController extends Controller
 
     private function validatedProject(Request $request, ?int $project = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'maharera_reg_no' => ['nullable', 'string', 'max:255', Rule::unique('projects', 'maharera_reg_no')->ignore($project)],
             'location_area' => ['required', 'string', 'max:255'],
@@ -372,6 +372,17 @@ class ProjectController extends Controller
             'latitude' => ['nullable', 'numeric', 'between:-90,90'],
             'longitude' => ['nullable', 'numeric', 'between:-180,180'],
             'website_url' => ['nullable', 'url', 'max:500'],
+            'proposed_fsi' => ['nullable', 'numeric', 'gt:0'],
+            'consumed_fsi' => ['nullable', 'numeric', 'gte:0'],
+            'development_facilities' => ['nullable', 'string', 'max:10000'],
+            'boundary_description' => ['nullable', 'string', 'max:5000'],
         ]);
+
+        if (array_key_exists('development_facilities', $data)) {
+            $items = preg_split('/[\\r\\n,]+/', (string) $data['development_facilities']);
+            $data['development_facilities'] = json_encode(array_values(array_filter(array_map('trim', $items))));
+        }
+
+        return $data;
     }
 }
