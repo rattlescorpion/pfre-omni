@@ -171,6 +171,142 @@ class ProjectController extends Controller
             ->with('success', 'Project association removed. The source Contact / Company record was not deleted.');
     }
 
+    public function storePhase(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'phase_name' => ['required', 'string', 'max:190'],
+            'maharera_registration_number' => ['nullable', 'string', 'max:100', 'unique:project_phases,maharera_registration_number'],
+            'registration_status' => ['required', Rule::in(['not_provided', 'application_submitted', 'registered', 'extended', 'lapsed', 'revoked', 'abeyance', 'deregistered'])],
+            'registration_date' => ['nullable', 'date'],
+            'validity_start_date' => ['nullable', 'date'],
+            'validity_end_date' => ['nullable', 'date', 'after_or_equal:validity_start_date'],
+            'proposed_completion_date' => ['nullable', 'date'],
+            'actual_completion_date' => ['nullable', 'date'],
+            'land_area_sqm' => ['nullable', 'numeric', 'gt:0'],
+            'status' => ['required', Rule::in(['planned', 'pre_launch', 'under_construction', 'completed', 'on_hold'])],
+            'notes' => ['nullable', 'string', 'max:5000'],
+        ]);
+        $data['project_id'] = $project;
+        $data['created_by'] = $request->user()->id;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_phases')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Project phase added. Verify its registration details against MahaRERA.');
+    }
+
+    public function storeApproval(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'approval_type' => ['required', 'string', 'max:80'],
+            'issuing_authority' => ['nullable', 'string', 'max:190'],
+            'reference_number' => ['nullable', 'string', 'max:120'],
+            'approval_status' => ['required', Rule::in(['pending', 'received', 'rejected', 'expired', 'not_applicable'])],
+            'application_date' => ['nullable', 'date'],
+            'issue_date' => ['nullable', 'date'],
+            'valid_until' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:5000'],
+        ]);
+        $data['project_id'] = $project;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_approvals')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Approval record added.');
+    }
+
+    public function storeDueDiligence(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'check_type' => ['required', Rule::in(['promoter_identity', 'project_registration', 'land_title', 'encumbrances', 'building_approvals', 'commencement_certificate', 'tax_payments', 'litigation', 'allotment_agreement', 'carpet_area'])],
+            'check_status' => ['required', Rule::in(['pending', 'verified', 'issue_found', 'not_applicable'])],
+            'checked_on' => ['nullable', 'date'],
+            'reference_number' => ['nullable', 'string', 'max:120'],
+            'findings' => ['nullable', 'string', 'max:5000'],
+            'action_required' => ['nullable', 'string', 'max:5000'],
+        ]);
+        $data['project_id'] = $project;
+        $data['checked_by'] = $request->user()->id;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_due_diligence_checks')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Due-diligence result recorded. Verify evidence before marking a check as verified.');
+    }
+
+    public function storeProgressUpdate(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'period_start' => ['required', 'date'],
+            'period_end' => ['required', 'date', 'after_or_equal:period_start'],
+            'published_on' => ['nullable', 'date'],
+            'completion_percentage' => ['nullable', 'numeric', 'between:0,100'],
+            'apartments_booked' => ['nullable', 'integer', 'min:0'],
+            'plots_booked' => ['nullable', 'integer', 'min:0'],
+            'garages_booked' => ['nullable', 'integer', 'min:0'],
+            'reported_project_status' => ['nullable', 'string', 'max:80'],
+            'progress_summary' => ['nullable', 'string', 'max:10000'],
+            'source_url' => ['nullable', 'url', 'max:1000'],
+        ]);
+        $data['project_id'] = $project;
+        $data['created_by'] = $request->user()->id;
+        $data['source_checked_at'] = $data['source_url'] ?? null ? now() : null;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_progress_updates')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Quarterly project update recorded.');
+    }
+
+    public function storeDocument(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'document_type' => ['required', Rule::in(['title_document', 'encumbrance_certificate', 'sanctioned_plan', 'layout_plan', 'iod', 'commencement_certificate', 'environment_clearance', 'fire_noc', 'other_noc', 'occupancy_certificate', 'allotment_letter', 'agreement_for_sale', 'conveyance_deed', 'rera_certificate', 'quarterly_update', 'audit_certificate', 'other'])],
+            'title' => ['required', 'string', 'max:190'],
+            'reference_number' => ['nullable', 'string', 'max:120'],
+            'issuing_authority' => ['nullable', 'string', 'max:190'],
+            'issue_date' => ['nullable', 'date'],
+            'expiry_date' => ['nullable', 'date'],
+            'document' => ['required', 'file', 'mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx', 'max:20480'],
+            'notes' => ['nullable', 'string', 'max:5000'],
+        ]);
+        $path = $request->file('document')->store('project-documents/'.$project, 'local');
+        DB::table('project_documents')->insert([
+            'project_id' => $project,
+            'project_phase_id' => $data['project_phase_id'] ?? null,
+            'document_type' => $data['document_type'],
+            'title' => $data['title'],
+            'reference_number' => $data['reference_number'] ?? null,
+            'issuing_authority' => $data['issuing_authority'] ?? null,
+            'issue_date' => $data['issue_date'] ?? null,
+            'expiry_date' => $data['expiry_date'] ?? null,
+            'storage_disk' => 'local',
+            'storage_path' => $path,
+            'verification_status' => 'unverified',
+            'is_public' => false,
+            'notes' => $data['notes'] ?? null,
+            'uploaded_by' => $request->user()->id,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Document uploaded to private project storage. It remains unverified until checked.');
+    }
+
+    public function downloadDocument(Request $request, int $project, int $document)
+    {
+        $record = DB::table('project_documents')->where('id', $document)
+            ->where('project_id', $project)->where('uploaded_by', $request->user()->id)
+            ->whereNull('deleted_at')->first();
+        abort_if(!$record || !$record->storage_path, 404);
+        abort_unless(Storage::disk($record->storage_disk)->exists($record->storage_path), 404);
+        return Storage::disk($record->storage_disk)->download($record->storage_path, basename($record->storage_path));
+    }
+
     private function validatedProject(Request $request, ?int $project = null): array
     {
         return $request->validate([
