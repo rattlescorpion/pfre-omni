@@ -64,13 +64,15 @@ class ProjectController extends Controller
             ->whereNull('deleted_at')->orderBy('approval_type')->get();
         $updates = DB::table('project_progress_updates')->where('project_id', $project)
             ->orderByDesc('period_end')->limit(8)->get();
+        $financialCompliance = DB::table('project_financial_compliance_records')->where('project_id', $project)
+            ->whereNull('deleted_at')->orderByDesc('financial_year')->get();
         $checks = DB::table('project_due_diligence_checks')->where('project_id', $project)
             ->whereNull('deleted_at')->orderBy('check_type')->get();
 
         return view('projects.show', [
             'project' => $record, 'properties' => $properties, 'phases' => $phases, 'landParcels' => $landParcels,
             'professionals' => $professionals, 'availableProfessionals' => $availableProfessionals,
-            'documents' => $documents, 'approvals' => $approvals, 'updates' => $updates, 'checks' => $checks,
+            'documents' => $documents, 'approvals' => $approvals, 'updates' => $updates, 'checks' => $checks, 'financialCompliance' => $financialCompliance,
         ]);
     }
 
@@ -217,7 +219,7 @@ class ProjectController extends Controller
         $data = $request->validate([
             'phase_name' => ['required', 'string', 'max:190'],
             'maharera_registration_number' => ['nullable', 'string', 'max:100', 'unique:project_phases,maharera_registration_number'],
-            'registration_status' => ['required', Rule::in(['not_provided', 'application_submitted', 'registered', 'extended', 'lapsed', 'revoked', 'abeyance', 'deregistered'])],
+            'registration_status' => ['required', Rule::in(['not_provided', 'application_submitted', 'registered', 'extended', 'lapsed', 'revoked', 'abeyance', 'deregistered', 'exemption_claimed'])],
             'registration_date' => ['nullable', 'date'],
             'validity_start_date' => ['nullable', 'date'],
             'validity_end_date' => ['nullable', 'date', 'after_or_equal:validity_start_date'],
@@ -276,6 +278,33 @@ class ProjectController extends Controller
         $data['updated_at'] = now();
         DB::table('project_due_diligence_checks')->insert($data);
         return redirect()->route('inventory.projects.show', $project)->with('success', 'Due-diligence result recorded. Verify evidence before marking a check as verified.');
+    }
+
+    public function storeFinancialCompliance(Request $request, int $project)
+    {
+        abort_if(!DB::table('projects')->where('id', $project)->exists(), 404);
+        $documentRule = fn () => ['nullable', 'integer', Rule::exists('project_documents', 'id')
+            ->where('project_id', $project)->where('uploaded_by', $request->user()->id)->whereNull('deleted_at')];
+        $data = $request->validate([
+            'project_phase_id' => ['nullable', 'integer', Rule::exists('project_phases', 'id')->where('project_id', $project)->whereNull('deleted_at')],
+            'financial_year' => ['required', 'regex:/^\\d{4}-\\d{2}$/', 'max:9'],
+            'separate_account_status' => ['required', Rule::in(['not_provided', 'declared', 'documents_uploaded', 'reviewed', 'issue_found'])],
+            'separate_account_share_percentage' => ['nullable', 'numeric', 'between:0,100'],
+            'withdrawal_percentage' => ['nullable', 'numeric', 'between:0,100'],
+            'certified_completion_percentage' => ['nullable', 'numeric', 'between:0,100'],
+            'engineer_certificate_document_id' => $documentRule(),
+            'architect_certificate_document_id' => $documentRule(),
+            'chartered_accountant_certificate_document_id' => $documentRule(),
+            'annual_audit_document_id' => $documentRule(),
+            'annual_audit_completed_on' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:5000'],
+        ]);
+        $data['project_id'] = $project;
+        $data['created_by'] = $request->user()->id;
+        $data['created_at'] = now();
+        $data['updated_at'] = now();
+        DB::table('project_financial_compliance_records')->insert($data);
+        return redirect()->route('inventory.projects.show', $project)->with('success', 'Project financial-compliance record saved.');
     }
 
     public function storeProgressUpdate(Request $request, int $project)
