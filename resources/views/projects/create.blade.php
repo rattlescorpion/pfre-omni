@@ -16,6 +16,10 @@
                 <div><label class="mb-1 block text-sm font-medium">Project Website</label><input type="url" name="website_url" value="{{ old('website_url') }}" class="w-full rounded-lg border-slate-300" placeholder="https://"></div>
                 <div class="md:col-span-2"><label class="mb-1 block text-sm font-medium">Full Project Address *</label><textarea name="address" rows="2" required class="w-full rounded-lg border-slate-300">{{ old('address') }}</textarea></div>
                 <div class="md:col-span-2"><label class="mb-1 block text-sm font-medium">Project Description</label><textarea name="description" rows="4" class="w-full rounded-lg border-slate-300">{{ old('description') }}</textarea></div>
+                <div><label class="mb-1 block text-sm font-medium">Proposed FSI</label><input type="number" min="0" step="0.0001" name="proposed_fsi" value="{{ old('proposed_fsi') }}" class="w-full rounded-lg border-slate-300"></div>
+                <div><label class="mb-1 block text-sm font-medium">FSI Proposed to be Consumed</label><input type="number" min="0" step="0.0001" name="consumed_fsi" value="{{ old('consumed_fsi') }}" class="w-full rounded-lg border-slate-300"></div>
+                <div class="md:col-span-2"><label class="mb-1 block text-sm font-medium">Development Works &amp; Proposed Facilities</label><textarea name="development_facilities" rows="3" class="w-full rounded-lg border-slate-300" placeholder="One item per line: Firefighting, drinking water, emergency evacuation, renewable energy, etc.">{{ old('development_facilities') }}</textarea></div>
+                <div class="md:col-span-2"><label class="mb-1 block text-sm font-medium">Project Boundary Description</label><textarea name="boundary_description" rows="2" class="w-full rounded-lg border-slate-300">{{ old("boundary_description") }}</textarea></div>
             </div>
         </section>
         <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
