@@ -19,7 +19,7 @@
     <section class="rounded-xl border bg-white p-5 shadow-sm">
         <div class="mb-4 flex items-center justify-between"><h2 class="text-lg font-bold">Project Overview</h2><span class="text-xs text-slate-500">Master development record</span></div>
         <dl class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div><dt class="text-xs font-semibold uppercase text-slate-500">Developer / Promoter</dt><dd class="mt-1 font-medium">{{ $project->developer_name ?: 'Not linked' }}</dd></div>
+            <div><dt class="text-xs font-semibold uppercase text-slate-500">Developer / Promoter</dt><dd class="mt-1 font-medium">@if($project->developer_directory_entity_id && $project->developer_name)<a href="{{ route('directory.show', $project->developer_directory_entity_id) }}" class="text-blue-700 hover:underline">{{ $project->developer_name }}</a>@else Not linked @endif</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Location</dt><dd class="mt-1 font-medium">{{ $project->address }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Land Area</dt><dd class="mt-1 font-medium">{{ $project->land_area_sqm ? number_format((float)$project->land_area_sqm, 2).' sq. m.' : 'Not recorded' }}</dd></div>
             <div><dt class="text-xs font-semibold uppercase text-slate-500">Buildings / Wings</dt><dd class="mt-1 font-medium">{{ $project->total_buildings ?? '—' }} / {{ $project->total_wings ?? '—' }}</dd></div>
