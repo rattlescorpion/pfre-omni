@@ -254,7 +254,7 @@ class ProjectController extends Controller
         ]);
         $data['project_id'] = $project;
         $data['created_by'] = $request->user()->id;
-        $data['source_checked_at'] = $data['source_url'] ?? null ? now() : null;
+        $data['source_checked_at'] = !empty($data['source_url']) ? now() : null;
         $data['created_at'] = now();
         $data['updated_at'] = now();
         DB::table('project_progress_updates')->insert($data);
